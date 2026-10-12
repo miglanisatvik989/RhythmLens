@@ -1,62 +1,98 @@
-# YAML and the launcher
+# Configuration and commands
 
-`config.yaml`, `configs/reference.yaml` and `configs/temporal.yaml` use strict
-schema 2: duplicate keys, unknown keys, missing settings, escaping paths and invalid
-combinations fail before execution. Keep paths repository-relative and secrets out
-of YAML. Legacy schema-1 JSON loading remains supported, but new experiments use YAML.
-The CLI default is `config.yaml`.
+Use strict schema-2 YAML for new experiments. Duplicate, unknown, missing, or
+invalid settings fail before execution. Paths are repository-relative; keep
+secrets out of YAML. Original YAML and resolved JSON are saved with each run.
 
-- `experiment`: distinct name and 32-bit seed.
-- `environment.profile`: `cpu` or `cuda128`, selecting separate locks/interpreters.
-- `runtime`: `device` (`cpu`, `cuda`, explicit `auto`), visible `gpu_index`, CPU threads.
-- `model`: `rhythm-cnn-v1` reference or `rhythm-dilated-v1` candidate, widths, kernels,
-  dropout. Candidate dilations are fixed by its version; a change requires a new version.
-- `optimizer` / `training`: unchanged AdamW, learning rate, weight decay, batch size,
-  epochs, patience, caching, validation macro-F1 selection.
-- `smoke`: training records per class, batch size, step/time limits and diagnostic
-  dropout; bounded to 200 steps and 1,200 seconds. A smoke is not performance evidence.
-- `preprocessing`: supported method and optional reusable training-fitted state.
-- `paths.output_root`: ignored outputs/, runs/ or checkpoints/ subdirectory.
-- `execution`: explicit `resume` and `noncanonical_development` booleans.
-- `evaluation`: current `profile`, `device`, `gpu_index`, CPU threads, independent of
-  checkpoint training runtime. CPU evaluation of CUDA-trained weights is supported.
+## Available configurations
 
-```sh
-python3 scripts/manage.py show --config configs/reference.yaml
-python3 scripts/manage.py train --config configs/reference.yaml --dry-run
-python3 scripts/manage.py doctor --config configs/reference.yaml --smoke
-```
+| Configuration | Model | Training environment | Seed |
+| --- | --- | --- | --- |
+| [reference.yaml](../configs/reference.yaml) | Reference | CPU | 42 |
+| [config.yaml](../config.yaml) | Reference | CUDA 12.8 | 42 |
+| [temporal.yaml](../configs/temporal.yaml) | Temporal | CPU | 42 |
+| [temporal-cuda128.yaml](../configs/temporal-cuda128.yaml) | Temporal | CUDA 12.8 | 42 |
+| [reference-cuda128-seed43.yaml](../configs/reference-cuda128-seed43.yaml) | Reference | CUDA 12.8 | 43 |
+| [reference-cuda128-seed44.yaml](../configs/reference-cuda128-seed44.yaml) | Reference | CUDA 12.8 | 44 |
+| [temporal-cuda128-seed43.yaml](../configs/temporal-cuda128-seed43.yaml) | Temporal | CUDA 12.8 | 43 |
+| [temporal-cuda128-seed44.yaml](../configs/temporal-cuda128-seed44.yaml) | Temporal | CUDA 12.8 | 44 |
 
-To change GPU, edit `runtime.gpu_index` before setup/doctor/train. The index refers
-to visible devices (including any caller-provided CUDA visibility restriction).
-To evaluate on CPU, set `evaluation.profile: cpu` and `evaluation.device: cpu`,
-ensure the CPU environment was set up, then:
+Seed43/44 files belong to the [fixed follow-up](experiments/rhythm-multiseed-v1.md).
+Do not edit inputs used by running or completed experiments.
+
+For a new experiment, copy a YAML to a new file, change the name/seed to obtain
+a distinct output path, inspect it, and commit it before training. The example
+below refers to a file you create:
 
 ```sh
-python3 scripts/manage.py evaluate --config config.yaml
+python3 scripts/manage.py show --config configs/my-experiment.yaml
+python3 scripts/manage.py train --config configs/my-experiment.yaml --dry-run
 ```
 
-The launcher selects the evaluation interpreter, loads training provenance intact,
-uses the current evaluation runtime, and writes its actual environment separately.
-The checkpoint path is derived from the training profile's run directory. Evaluation
-is validation-only; no holdout option exists. It cannot present smoke as validation.
-Calling `evaluate-rhythm` without a runtime YAML defaults safely to CPU.
+Changing the training seed does not change the frozen split directory or assignments.
 
-After interruption, preserve the same configuration and run:
+## Settings
+
+| Section | Purpose |
+| --- | --- |
+| `experiment` | Distinct name and 32-bit training seed |
+| `environment.profile` | `cpu` or `cuda128`; selects the locked training environment |
+| `runtime` | `device` (cpu/cuda/auto), visible `gpu_index`, CPU threads |
+| `data` | Existing frozen split directory |
+| `preprocessing` | Fixed method; `reuse: null` fits automatically on training |
+| `model` | Supported version, widths, kernels, training dropout |
+| `optimizer`, `training` | AdamW settings, batch size, epochs, patience, caching, validation macro F1 |
+| `smoke` | Training-only subset, diagnostic dropout, bounded steps/time and target |
+| `paths.output_root` | Ignored output location |
+| `execution` | Explicit resume and noncanonical-development flags |
+| `evaluation` | Independent profile, device, GPU index, CPU threads |
+
+CUDA 12.8 is supported on Linux x86_64, including WSL. Choose `cuda128` and
+`device: cuda`, then select `runtime.gpu_index` in a new committed configuration.
+The index respects caller-provided CUDA visibility restrictions.
+Candidate dilations are fixed by the model version.
+
+## Actions
+
+| Action | Behavior |
+| --- | --- |
+| `show` | Resolve settings, paths, and setup commands |
+| `setup` | Install the selected locked training environment |
+| `setup-evaluation` | Install the independently selected locked evaluator |
+| `verify-data` | Repeatable metadata and train/validation raw checksums; no decoding, GPU execution, or run output |
+| `doctor` | Check readiness for a new run, including environment/device execution and output availability |
+| `test` | Run synthetic tests |
+| `smoke` | Bounded training-only wiring check |
+| `train` | Full development training |
+| `evaluate` | Evaluate the saved best checkpoint on validation |
+| `fit-preprocessing` | Optional separate training-only fit for explicit reuse |
+
+CUDA training and CPU evaluation need both environments:
+`setup` prepares training; `setup-evaluation` prepares the evaluator.
+Evaluation keeps checkpoint training provenance intact, records its actual runtime,
+and derives the checkpoint/output path from the training profile. It is validation-only
+and rejects smoke checkpoints.
+
+`verify-data` works after completed runs. `doctor` intentionally checks readiness
+for a new train output; a completed output is unavailable for a new run.
+`--dry-run` prints commands without executing them.
+`doctor --smoke` permits development source and checks training inputs.
+Canonical full training requires clean committed source; the explicit development
+override is recorded and does not establish canonical results.
+
+## Resume
+
+Keep the original configuration and request continuation with an action flag:
 
 ```sh
-python3 scripts/manage.py train --config configs/reference.yaml --resume
+python3 scripts/manage.py train --config configs/my-experiment.yaml --resume
 ```
 
-Alternatively set only `execution.resume: true`, commit that reviewed YAML action
-change to retain a clean canonical source state, and repeat the `train` action. Changing this resume flag
-and its YAML content hash is allowed; learning settings, model, preprocessing, data,
-source hashes, dependency locks, packages and runtime must agree. Original YAML and
-resolved training configuration are preserved. The latest resume preflight is saved
-separately. Completed runs reject resume. To start a different experiment choose a
-new name and set resume false. Resume replays any partial epoch from `last.pt`; it
-does not continue from partially updated in-memory weights. CPU determinism is
-regression-tested; CPU/GPU numerical equivalence is not promised.
+A usable `last.pt` restores model, optimizer, selection/history, and applicable RNG
+states at the completed epoch boundary. A partial epoch is repeated. Completed runs
+cannot resume or be overwritten. There is no exact mid-epoch continuation claim.
 
-`make` delegates to the same launcher (`CONFIG=configs/reference.yaml`). No full
-training is performed by setup, doctor, verify-data, test, build or dry-run.
+Settings, data, preprocessing, model, source bundle, packages, locks, and runtime
+must agree. The YAML resume flag is retained, but `--resume` avoids editing an
+experiment merely to continue it. For historical resume after source changes,
+use the [recorded revision](reproduction.md#historical-reproduction).

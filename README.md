@@ -1,36 +1,53 @@
 # RhythmLens
 
-Reproducible ECG rhythm research on the frozen PhysioNet Challenge 2017 v3
-recordings. Reference and temporal-candidate implementations are available;
-research results, quality gating, calibration and AF deferral remain pending.
-This is not a clinically validated system.
+Quality-aware ECG research with reproducible rhythm-classification experiments.
+Reference and temporal models are implemented, with [recorded development results](reports/README.md).
+Quality gating, calibration, AF deferral, and final holdout evaluation remain pending.
 
-Use Python pinned in `.python-version` and uv 0.12.5. From a fresh clone:
+## Run an experiment
+
+Use **Python 3.11.16**, **uv 0.12.5**, and Git. Run from the repository root.
+[Choose a configuration](docs/configuration.md#available-configurations):
+CPU is the starting point; CUDA 12.8 uses a separate locked environment.
 
 ```sh
-python3 scripts/manage.py setup --config configs/reference.yaml
-# Restore the recorded raw files; see docs/reproduction.md. Do not regenerate splits.
-python3 scripts/manage.py verify-data --config configs/reference.yaml
-python3 scripts/manage.py doctor --config configs/reference.yaml
-python3 scripts/manage.py test --config configs/reference.yaml
-python3 scripts/manage.py fit-preprocessing --config configs/reference.yaml
-# Set preprocessing.reuse to the fit-preprocessing/preprocessing.json just produced.
-# Review and commit that YAML change before canonical training.
-python3 scripts/manage.py smoke --config configs/reference.yaml
-python3 scripts/manage.py train --config configs/reference.yaml
+CONFIG=configs/reference.yaml
+python3 scripts/manage.py setup --config "$CONFIG"
+python3 scripts/manage.py setup-evaluation --config "$CONFIG"
+# Restore the recorded dataset once: see docs/reproduction.md#restore-data.
+python3 scripts/manage.py verify-data --config "$CONFIG"
+python3 scripts/manage.py doctor --config "$CONFIG"
+python3 scripts/manage.py smoke --config "$CONFIG"
+# Inspect the smoke report before continuing to full training.
+python3 scripts/manage.py train --config "$CONFIG"
+python3 scripts/manage.py evaluate --config "$CONFIG"
 ```
 
-Training is an explicit user action; preflight requires clean committed source.
-The existing 5,969 / 1,280 / 1,279 assignments are reused throughout. Patient
-identifiers are unavailable: these are recording splits with verified duplicates
-kept together, not evidence of patient independence. Holdout evaluation is locked.
+For GPU training choose `config.yaml` (reference) or
+`configs/temporal-cuda128.yaml` (temporal). `setup-evaluation` prepares the
+configured evaluator, including CPU evaluation after CUDA training; it is
+idempotent when both profiles are the same.
 
-[Reproduction and data restoration](docs/reproduction.md) ·
-[YAML settings and resume](docs/configuration.md) ·
-[Contributor checks](CONTRIBUTING.md) ·
-[Readiness report](reports/pretraining-readiness.md)
+Preprocessing fits automatically on the **5,969 training records**. The
+**1,280 validation records** select checkpoints. The **1,279 holdout records**
+remain untouched. Canonical training requires clean committed source.
+For a new run, choose and commit a new experiment configuration with a distinct
+name/seed. To reproduce historical inputs, use a fresh checkout at their recorded revision.
 
-The separate CUDA 12.8 environment uses `config.yaml` (CUDA by default). Change
-`runtime.gpu_index` and `evaluation` settings in YAML, then run the same launcher.
-Use `configs/temporal.yaml` to opt into the longer-context candidate. Read the
-reproduction guide before running either experiment.
+Outputs: `outputs/rhythm/<experiment>/<profile>/seed<seed>/<action>/`.
+Training writes `best.pt`, `last.pt`, `history.json`, and `run-report.json`;
+evaluation writes `evaluation-report.json` and validation predictions/plots.
+Existing outputs cannot be silently overwritten.
+
+`make <action> CONFIG=<file>` is an optional alias to the same launcher.
+Use `make help` or `python3 scripts/manage.py --help` to see the actions.
+
+## Read more
+
+[Reproduction](docs/reproduction.md) · [Configuration and resume](docs/configuration.md) ·
+[Methods](docs/methods.md) · [Documentation index](docs/README.md) ·
+[Results and evidence](reports/README.md) · [Contributing](CONTRIBUTING.md)
+
+Patient identifiers are unavailable; recording splits preserve verified duplicate
+groups but do not establish patient independence. This research system has not
+been clinically validated.
