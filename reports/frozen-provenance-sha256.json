@@ -1,0 +1,19 @@
+{
+  "data/manifests/challenge2017-v3/audit.json": "2e85add08052656eed0b72ddf0bb40c1d7163ee131aa18d796625ffb78516b40",
+  "data/manifests/challenge2017-v3/provenance.json": "d7d79603a51d5ef35f93f5d2ae55344f0b7a6fe567d8c46b29a31575c6c4b636",
+  "data/manifests/challenge2017-v3/records.csv": "a390f3103023df679d08544ce6f4ca9f972fb59394901a78c3027de93f1d0560",
+  "reports/challenge2017-audit.md": "97a0efc15f8eb608028d40576101aec676f12a61d4ac3668b8b2c56058ff5f95",
+  "reports/challenge2017-verification.md": "4ffb9071a60703f760295578a32740e6b14b1ede9c1f03b08d5f67e4ffa51401",
+  "reports/configuration-workflow.md": "95a65615838827b4ff755ac0cdf19ac461f5b37322b9a42e4d7fd6be15d075af",
+  "reports/environment-setup.md": "76a12830dc19aaed0c7ecc74c6e6da090dffc1e0a3c3c6f9c11037469b214e6a",
+  "reports/rhythm-baseline-implementation.md": "4d8a4f5254fc1a8171ca108797c31aee6dfe2fc85ea7b538044cf0bd3d86a56d",
+  "splits/challenge2017-v3-seed42-v1/README.md": "3f40b424bfaba0c2fa9761e8eacf4fc61bc6f9bfce4e284f82dea76bb4ae786a",
+  "splits/challenge2017-v3-seed42-v1/config.json": "510ba1610a0fcbddaa634f2059c8d2deb0f83b2e1631e710ae461b0f83077b3e",
+  "splits/challenge2017-v3-seed42-v1/frozen.json": "2c887a1934fc93f40861a87522b5b2b5aee310aa622335e7912beffc0e26c121",
+  "splits/challenge2017-v3-seed42-v1/holdout.csv": "d7aad3212e0052f33ad86666a3844dee146f99cc584c972854caf91b331b0717",
+  "splits/challenge2017-v3-seed42-v1/summary.json": "f2673a1e0bce9a94bc6af99bdab8b34b96b2ce3408138a8cd2bdcdceb4e2093d",
+  "splits/challenge2017-v3-seed42-v1/train.csv": "3f249df84acbbd253ca8fdc73c29fc74c5d84f04aa08e3e4aa3103ebbd51e580",
+  "splits/challenge2017-v3-seed42-v1/validation.csv": "19b515593afa35b98a3c86fe0c45f32e67e6a29a56aab6186b81e8155552e5cd",
+  "configs/challenge2017-audit-v1.json": "51feb7d0d7fa0798d39d51fc40d8b712cd5b3238c7b74883cee62156bc4e7436",
+  "configs/challenge2017-v3-seed42-v1.json": "510ba1610a0fcbddaa634f2059c8d2deb0f83b2e1631e710ae461b0f83077b3e"
+}

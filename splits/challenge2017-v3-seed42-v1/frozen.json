@@ -1,0 +1,25 @@
+{
+  "created_at_utc": "2026-10-12T06:08:30.952705+00:00",
+  "split_version": "challenge2017-v3-seed42-v1",
+  "files_sha256": {
+    "README.md": "3f40b424bfaba0c2fa9761e8eacf4fc61bc6f9bfce4e284f82dea76bb4ae786a",
+    "config.json": "510ba1610a0fcbddaa634f2059c8d2deb0f83b2e1631e710ae461b0f83077b3e",
+    "holdout.csv": "d7aad3212e0052f33ad86666a3844dee146f99cc584c972854caf91b331b0717",
+    "summary.json": "f2673a1e0bce9a94bc6af99bdab8b34b96b2ce3408138a8cd2bdcdceb4e2093d",
+    "train.csv": "3f249df84acbbd253ca8fdc73c29fc74c5d84f04aa08e3e4aa3103ebbd51e580",
+    "validation.csv": "19b515593afa35b98a3c86fe0c45f32e67e6a29a56aab6186b81e8155552e5cd"
+  },
+  "source_manifest_sha256": "a390f3103023df679d08544ce6f4ca9f972fb59394901a78c3027de93f1d0560",
+  "source_audit_sha256": "2e85add08052656eed0b72ddf0bb40c1d7163ee131aa18d796625ffb78516b40",
+  "source_provenance_sha256": "d7d79603a51d5ef35f93f5d2ae55344f0b7a6fe567d8c46b29a31575c6c4b636",
+  "dependency_lock_sha256": "4ff3ef044d9e70d26b8a5c0494478e30cbc3f73ac3ecd94c109e1dd1adf44c8d",
+  "implementation_sha256": {
+    "__init__.py": "bda441cab9eb0caac0aac68463e9d491db5cbd44729c1ddb65cae6d5e16db783",
+    "__main__.py": "c7b72873e6fa1768e524aebb392f2a23267fc655af2411ef46a5e5cd556c5084",
+    "audit.py": "c252876c201f18258b21762f6c0f3e558d52916c1eb9eb0fde078255dd29a6f5",
+    "cli.py": "91a78cd844fd4456f7a576d395c99c966cde205e90f05aa3236c31ede02944fc",
+    "data.py": "241da71767049ef6eec915939afc6105a6e5bd79c413ab103a6d85febbd505fc",
+    "splits.py": "967d2be84e964c0ece647fdd1da99ab41b00715f104d651679785ac6e8f31206"
+  },
+  "assignment_sha256": "fb27f37a8f9dcd1d8931116e252290a68be29844b5b81badc3223954184054c7"
+}

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling==1.27.0", "editables==0.5"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rhythmlens"
+version = "0.1.0"
+description = "Reproducible quality-aware ECG research"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+authors = [{name = "RhythmLens contributors"}]
+dependencies = []
+
+[project.optional-dependencies]
+audit = ["numpy>=2.2,<2.3", "scipy>=1.15,<1.16", "pandas>=2.2,<2.3", "wfdb>=4.3,<4.4", "matplotlib>=3.10,<3.11", "pyyaml>=6,<7"]
+train = ["numpy>=2.2,<2.3", "scipy>=1.15,<1.16", "scikit-learn>=1.6,<1.7", "torch>=2.8,<2.9", "pyyaml>=6,<7", "wfdb>=4.3,<4.4", "matplotlib>=3.10,<3.11"]
+dev = ["pytest>=8.3,<9", "ruff>=0.11,<0.12", "build>=1.2,<2", "hatchling==1.27.0", "editables==0.5"]
+
+[project.scripts]
+rhythmlens = "rhythmlens.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rhythmlens"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
