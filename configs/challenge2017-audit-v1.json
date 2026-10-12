@@ -1,0 +1,20 @@
+{
+  "version": "challenge2017-audit-v1",
+  "label_order": [
+    "N",
+    "A",
+    "O",
+    "~"
+  ],
+  "sampling_rate_hz": 300,
+  "physical_conversion": "(ADC - baseline) / gain, then convert declared units to mV",
+  "baseline_default": "WFDB ADC zero when baseline absent",
+  "flat_definition": "all physical samples exactly equal; flag and retain",
+  "noise_policy": "retain every ~ label; no quality threshold or filtering",
+  "header_advisories": "zero checksum is unverified; initial value is unused by format 16; flag discrepancies without altering samples",
+  "integrity_policy": "nonzero checksum mismatch blocks; all originals must match archive bytes and MAT/WFDB payloads must agree",
+  "duplicate_definition": "exact float64 physical mV samples, sample count, channels and sampling rate",
+  "subject_policy": "unknown; no verified patient identifiers in these inputs",
+  "blocking": "any structural/data/label/provenance error or conflicting duplicate labels",
+  "preprocessing": "unit decoding only; no normalization, filtering, resampling, or fitting"
+}

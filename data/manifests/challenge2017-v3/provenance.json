@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "dataset_version": "1.0.0",
+  "label_version": "REFERENCE-v3",
+  "dataset_url": "https://physionet.org/content/challenge-2017/1.0.0/",
+  "license": {
+    "name": "Open Data Commons Attribution License v1.0",
+    "spdx": "ODC-By-1.0",
+    "url": "https://physionet.org/content/challenge-2017/view-license/1.0.0/"
+  },
+  "attribution": {
+    "dataset": "PhysioNet/Computing in Cardiology Challenge 2017; recordings donated by AliveCor",
+    "dataset_doi": "10.13026/d3hm-sf11",
+    "publication": "Clifford GD et al. AF classification from a short single lead ECG recording. Computing in Cardiology (2017).",
+    "publication_doi": "10.22489/CinC.2017.065-469",
+    "physionet_citation": "Pollard T et al. PhysioNet as a global platform for biomedical research. Nature Health (2026).",
+    "physionet_doi": "10.1038/s44360-026-00096-z"
+  },
+  "files": {
+    "training2017.zip": {
+      "path": "data/raw/challenge2017/training2017.zip",
+      "source_url": "https://physionet-open.s3.amazonaws.com/challenge-2017/1.0.0/training2017.zip",
+      "official_source_url": "https://physionet.org/files/challenge-2017/1.0.0/training2017.zip",
+      "sha256": "25fdbab36bb6724b66a4d2c26ff89f6b9d6ff87e6aed714d24cf5bf071cd1255",
+      "bytes": 99226822,
+      "downloaded_at_utc": "2026-10-12T06:05:17.948801+00:00",
+      "observed_at_utc": "2026-10-12T06:05:20.199200+00:00",
+      "acquisition_method": "download",
+      "download_time_note": null
+    },
+    "REFERENCE-v3.csv": {
+      "path": "data/raw/challenge2017/REFERENCE-v3.csv",
+      "source_url": "https://physionet-open.s3.amazonaws.com/challenge-2017/1.0.0/REFERENCE-v3.csv",
+      "official_source_url": "https://physionet.org/files/challenge-2017/1.0.0/REFERENCE-v3.csv",
+      "sha256": "ae517e474b0bc89a7517ad876b5b4dadc6c94f680d0665c04746db9432df855b",
+      "bytes": 76752,
+      "downloaded_at_utc": "2026-10-12T06:05:27.375173+00:00",
+      "observed_at_utc": "2026-10-12T06:05:27.384921+00:00",
+      "acquisition_method": "download",
+      "download_time_note": null
+    }
+  }
+}

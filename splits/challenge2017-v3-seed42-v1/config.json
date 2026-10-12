@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "split_version": "challenge2017-v3-seed42-v1",
+  "seed": 42,
+  "fractions": {
+    "train": 0.7,
+    "validation": 0.15,
+    "holdout": 0.15
+  },
+  "label_order": [
+    "N",
+    "A",
+    "O",
+    "~"
+  ],
+  "label_version": "REFERENCE-v3",
+  "algorithm": "per-class largest-group-first, seeded ties, largest remaining target deficit; v1",
+  "grouping": "exact physical signal duplicate_group; otherwise recording",
+  "conflict_policy": "block freeze; never relabel or silently drop conflicting duplicates",
+  "eligibility": "all valid labeled recordings, including noisy and flat recordings",
+  "subject_ids": "unknown; patient independence cannot be verified",
+  "holdout_policy": "no development or tuning; freeze models, thresholds, quality gates and analyses before evaluation"
+}

@@ -1,0 +1,59 @@
+{
+  "records": 8528,
+  "class_counts": {
+    "train": {
+      "N": 3553,
+      "A": 530,
+      "O": 1691,
+      "~": 195
+    },
+    "validation": {
+      "N": 762,
+      "O": 362,
+      "A": 114,
+      "~": 42
+    },
+    "holdout": {
+      "A": 114,
+      "N": 761,
+      "~": 42,
+      "O": 362
+    }
+  },
+  "split_counts": {
+    "train": 5969,
+    "validation": 1280,
+    "holdout": 1279
+  },
+  "actual_proportions": {
+    "train": 0.6999296435272045,
+    "validation": 0.150093808630394,
+    "holdout": 0.1499765478424015
+  },
+  "class_proportions": {
+    "train": {
+      "N": 0.6999605988967691,
+      "A": 0.6992084432717678,
+      "O": 0.7002070393374741,
+      "~": 0.6989247311827957
+    },
+    "validation": {
+      "N": 0.15011820330969267,
+      "A": 0.1503957783641161,
+      "O": 0.14989648033126293,
+      "~": 0.15053763440860216
+    },
+    "holdout": {
+      "N": 0.1499211977935382,
+      "A": 0.1503957783641161,
+      "O": 0.14989648033126293,
+      "~": 0.15053763440860216
+    }
+  },
+  "record_overlap": 0,
+  "duplicate_group_overlap": 0,
+  "class_coverage": true,
+  "patient_independence": "unverified: patient IDs unavailable; no identities inferred",
+  "source_time_independence": "unverified: single source and no verified longitudinal subject/time linkage",
+  "evaluation": "pending; holdout frozen for future final evaluation only"
+}

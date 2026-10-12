@@ -9,7 +9,8 @@ validated.
 
 ## Status
 
-- Implementation: **pending**.
+- Data acquisition, auditing, and frozen split CLI: **implemented**.
+- Model implementation: **pending**.
 - Experiments and results: **pending**. No performance claims are available.
 
 ## Research principles
@@ -47,7 +48,7 @@ Only explicitly designated synthetic test fixtures may be exempted from data
 ignore rules when needed. Document their synthetic provenance and allowlist each
 exact fixture path in `.gitignore`; do not broadly exempt a fixture directory.
 
-Data acquisition, model implementation, and evaluation are pending.
+Model implementation and evaluation are pending. See the data pipeline commands below.
 
 ## Python environment and installation
 
@@ -110,8 +111,8 @@ platform markers. Keep it under version control; `--locked` refuses stale
 metadata rather than silently resolving new versions. The project itself is
 installed editable using a relative `.` source. `.venv/` is ignored.
 
-The CLI currently exposes only package help and version information. Its base
-installation has no runtime dependencies. Select optional extras as needed:
+The CLI exposes help/version plus acquisition, audit, and split commands. Its base
+installation has no runtime dependencies; audit and split commands require the `audit` extra. Select optional extras as needed:
 
 ```sh
 uv sync --python 3.11.16 --locked --extra audit --default-index https://pypi.org/simple
@@ -124,7 +125,7 @@ arrays and signal processing, pandas for manifests, Matplotlib for inspection,
 and PyYAML for configurations. `train` provides PyTorch, scikit-learn for
 splits/baselines/metrics, numerical libraries and configuration parsing. `dev`
 provides pytest, Ruff, and pinned build tooling. These are dependencies for
-planned work; no pipeline, models, or evaluation are implemented yet.
+the data pipeline and planned research; models and evaluation are not implemented.
 
 For a conventional pip installation with Python 3.11:
 
@@ -175,3 +176,138 @@ versions, verification commands, and setup failures. No datasets are required
 or downloaded for environment verification. Future runs must record seeds,
 provenance, preprocessing, splits, configuration, and evaluation procedures as
 required by AGENTS.md; this scaffold does not prescribe experimental choices.
+
+## Challenge 2017 acquisition, audit, and frozen splits
+
+Install the locked environment with the `audit` extra (plus `dev` for tests),
+then run from this repository's root:
+
+```sh
+uv sync --python 3.11.16 --locked --extra audit --extra dev --default-index https://pypi.org/simple
+.venv/bin/rhythmlens acquire
+.venv/bin/rhythmlens audit
+.venv/bin/rhythmlens split
+```
+
+`acquire` downloads only `training2017.zip` and the separately published
+`REFERENCE-v3.csv` from the [official version 1.0.0 source](https://physionet.org/content/challenge-2017/1.0.0/).
+If the primary host is slow, use `.venv/bin/rhythmlens acquire --mirror s3`
+for the official `physionet-open` bucket listed on the same dataset page.
+Provenance records both the actual download URL and the canonical PhysioNet URL.
+Existing cached files are reused and checked against recorded SHA-256 hashes.
+To reuse downloads elsewhere:
+
+```sh
+.venv/bin/rhythmlens acquire --local-archive /path/to/training2017.zip --local-reference /path/to/REFERENCE-v3.csv
+```
+
+Downloads and extracted originals remain in ignored `data/raw/challenge2017/`.
+Extraction preflights all paths, rejects traversal and symlinks, and publishes
+an extraction only after completion. Existing extractions are not overwritten;
+audit checks extracted file contents against the archive. Partial downloads
+are never published as completed files. Provenance in
+`data/manifests/challenge2017-v3/provenance.json` records official URLs, dataset
+and label versions, byte sizes, SHA-256 checksums, acquisition method, UTC download
+time and license. For supplied local files the original download time is unknown
+and explicitly null; observation time is recorded separately. Checksums describe
+the observed files, not an independent publisher-signed authenticity guarantee.
+
+`audit` joins both references by record ID with label order **N, A, O, ~**.
+It recomputes counts and records every archive-to-v3 label change. The expected
+format is one-channel, 300 Hz, MATLAB V4 with a WFDB header. SciPy loads `val`;
+WFDB supplies header semantics and independently reads digital samples to check
+payload/offset agreement. Header sample count, signal name, format, gain,
+baseline, units, finite samples and integer range are validated. Optional
+initial-value and checksum fields are compared and recorded. In this archive all
+header checksums are zero; the pipeline flags them as unverified instead of
+treating them as integrity evidence. Initial-value discrepancies are advisory
+for format 16, where that field is not used to decode amplitudes. A nonzero
+checksum mismatch remains a blocker. Original-byte agreement with the archive
+and independent MAT/WFDB payload agreement are required. Physical values are `(ADC - baseline) / gain`, converted to mV;
+an absent baseline uses the header ADC zero. Calibration and units must be
+explicit. Original files are never normalized or rewritten.
+
+Missing pairs, orphan records, invalid labels, malformed records and nonfinite
+signals are reported and block split creation. Format-16 missing-value sentinels
+are also flagged. Flat means all decoded samples are exactly equal: those
+records are flagged and retained, as are naturally noisy `~` records. There is
+no amplitude/quality cutoff. Every label or MAT/header record appears in the
+inventory; errors never silently remove cases. Unknown subject IDs are written
+as `unknown` rather than inferred from recording names.
+
+Exact duplicate groups hash canonical float64 mV samples plus channel count,
+sampling rate and length. This detects equivalent physical signals across MAT
+containers and calibrations; a second digest records digital values with gain,
+baseline and original units. Near duplicates are not inferred. Conflicting v3
+labels in an exact group are reported and block freezing, requiring an explicit
+reviewed policy in a future version.
+
+Audit artifacts:
+
+- `configs/challenge2017-audit-v1.json`: decoding and validation policy.
+- `data/manifests/challenge2017-v3/records.csv`: full record inventory and flags.
+- `data/manifests/challenge2017-v3/audit.json`: findings, changed labels, duplicates,
+  input hashes, software versions and code hashes.
+- `reports/challenge2017-audit.md`: actual counts, durations and blockers.
+- `outputs/challenge2017/previews/`: ignored waveform PNGs for the first five
+  valid record IDs per class (or fewer if unavailable), generated before freezing.
+
+Use `rhythmlens audit --no-previews` to skip images before freezing. Audit exits
+nonzero on validation errors, after writing its findings. Once splits exist,
+audit refuses to replace their source snapshot or generate more previews.
+
+`split` requires a passing, unchanged audit and retains all eligible records.
+It groups exact duplicates, sorts groups deterministically, uses seed 42 for
+size ties, and assigns each class's groups to the largest remaining target
+count deficit for approximately 70/15/15 train/validation/holdout proportions.
+Class coverage is enforced; fewer than three groups in a class is a blocker.
+Indivisible groups can prevent exact proportions. Record and duplicate-group
+overlap are checked explicitly, and actual class/overall proportions are saved.
+These are **recording-level** splits. Patient and longitudinal independence
+cannot be established from the available identifiers. The single data source
+also does not establish external-source generalization.
+
+Frozen files are under `splits/challenge2017-v3-seed42-v1/`: `train.csv`,
+`validation.csv`, `holdout.csv`, `config.json`, `summary.json`, `README.md`, and
+`frozen.json`. A matching configuration lives in `configs/`. Frozen metadata
+binds manifest, audit, provenance, source code, dependency lock, configuration
+and partition hashes. Existing frozen outputs are refused, with no force flag.
+Future changes require an explicitly reviewed version and implementation update.
+Use validation for development; keep holdout untouched until all model,
+threshold, quality-gating and analysis choices are frozen. No AF predictions,
+deferrals or performance metrics are produced by this data pipeline.
+
+### Dataset attribution and decoding references
+
+Challenge data were donated by AliveCor and published on PhysioNet, dataset
+DOI [10.13026/d3hm-sf11](https://doi.org/10.13026/d3hm-sf11). The dataset page lists
+[Open Data Commons Attribution License v1.0](https://physionet.org/content/challenge-2017/view-license/1.0.0/)
+(ODC-By-1.0). Preserve this attribution and license notice with derived manifests
+and reports. The dataset license is separate from any future RhythmLens code
+license.
+
+Cite Clifford GD et al., *AF classification from a short single lead ECG
+recording*, Computing in Cardiology (2017),
+[doi:10.22489/CinC.2017.065-469](https://doi.org/10.22489/CinC.2017.065-469).
+The current dataset page also requests the PhysioNet citation: Pollard T et al.,
+*PhysioNet as a global platform for biomedical research*, Nature Health (2026),
+[doi:10.1038/s44360-026-00096-z](https://doi.org/10.1038/s44360-026-00096-z).
+
+Decoding follows the official [WFDB header specification](https://physionet.org/physiotools/wag/header-5.htm)
+and [SciPy 1.15.3 loadmat documentation](https://docs.scipy.org/doc/scipy-1.15.3/reference/generated/scipy.io.loadmat.html).
+The dated class table on the challenge page is not used as the v3 ground truth;
+counts are always recomputed from the separately acquired reference.
+
+### Verification
+
+```sh
+.venv/bin/pytest -q
+.venv/bin/ruff check src tests
+.venv/bin/ruff format --check src tests
+```
+
+Tests generate synthetic MAT/header signals in temporary directories using
+explicit generator seeds and exercise the real acquisition, audit and split
+functions. No synthetic sample files are stored in Git. Synthetic test outcomes
+and actual dataset findings are reported separately in
+`reports/challenge2017-verification.md` and `reports/challenge2017-audit.md`.
