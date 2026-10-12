@@ -1,0 +1,63 @@
+# Edit this file, then run: python3 scripts/manage.py show
+schema_version: 2
+
+experiment:
+  name: baseline-v1           # Change for a new run; existing outputs are protected.
+  seed: 43
+
+environment:
+  profile: cuda128           # cpu or cuda128; selects a separate exact-version lock.
+
+runtime:
+  device: cuda               # cpu, cuda, or explicit auto selection.
+  gpu_index: 0               # Visible CUDA device index.
+  cpu_threads: 2
+
+data:
+  split_dir: splits/challenge2017-v3-seed42-v1
+
+preprocessing:
+  method: median-fixed-training-rms-v1
+  reuse: null                # Or a previous full-training preprocessing.json path.
+
+model:
+  name: rhythm-cnn-v1
+  stem_channels: 32
+  stem_kernel: 15
+  channels: [32, 64, 128]
+  kernel: 7
+  dropout: 0.1
+
+optimizer:
+  name: AdamW
+  learning_rate: 0.001
+  weight_decay: 0.0001
+
+training:
+  batch_size: 16
+  epochs: 50
+  patience: 8
+  cache_signals: true
+  selection_metric: macro_f1_four_classes
+
+smoke:
+  records_per_class: 1
+  batch_size: 4
+  max_steps: 200
+  max_seconds: 1200.0
+  target_accuracy: 1.0
+  target_loss: 0.1
+  dropout: 0.0                # Diagnostic override; full training uses model.dropout.
+
+paths:
+  output_root: outputs/rhythm
+
+execution:
+  resume: false
+  noncanonical_development: false  # Full training requires clean committed source.
+
+evaluation:
+  profile: cpu
+  device: cpu
+  gpu_index: 0
+  cpu_threads: 2
