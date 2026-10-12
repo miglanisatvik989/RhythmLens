@@ -1,23 +1,20 @@
 # CUDA 12.8 environment
 
-Use YAML plus the canonical launcher from the repository root:
+Separate Linux x86_64 environment, including WSL. Its exact lock and root editable
+installation without dependencies/build isolation preserve CUDA Torch.
+
+Use the [canonical workflow](../../README.md) with a CUDA configuration:
 
 ```sh
-python3 scripts/manage.py setup --config config.yaml
-python3 scripts/manage.py doctor --config config.yaml
+python3 scripts/manage.py setup --config configs/temporal-cuda128.yaml
+python3 scripts/manage.py setup-evaluation --config configs/temporal-cuda128.yaml
+python3 scripts/manage.py doctor --config configs/temporal-cuda128.yaml
 ```
 
-`config.yaml` selects this separate exact lock and `environments/cuda128/.venv`.
-The root package is installed without dependencies or build isolation after sync,
-so the root CPU Torch source cannot replace CUDA Torch. Hatchling and editables
-are pinned and installed by this environment lock. Edit GPU index through YAML.
-Doctor includes real synthetic forward/backward and architecture/memory diagnostics;
-`verify_gpu.py --config config.yaml` is a legacy alias. No ECG decoding occurs in
-doctor. `doctor --smoke` permits development source and verifies training inputs.
+The evaluator may use CPU independently. Setup prepares environments; doctor
+verifies actual GPU execution, capability, architectures, and memory.
+Choose GPU settings in a new committed configuration.
+`verify_gpu.py --config <file>` remains an alias to doctor.
 
-See [reproduction](../../docs/reproduction.md) and
-[configuration/resume](../../docs/configuration.md) for training, evaluation on CPU,
-canonical source gates and epoch-boundary resume. Setup alone does not verify GPU
-hardware. Current observed hardware evidence is in
-[readiness](../../reports/pretraining-readiness.md). The prior instructions are
-preserved in docs/archive/cuda128-before-readiness.md as historical context.
+See [configuration](../../docs/configuration.md), [reproduction](../../docs/reproduction.md),
+and [dated hardware evidence](../../reports/pretraining-readiness.md).

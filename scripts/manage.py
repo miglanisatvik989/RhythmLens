@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ACTIONS = (
     "show",
     "setup",
+    "setup-evaluation",
     "doctor",
     "verify-data",
     "test",
@@ -27,6 +28,7 @@ ACTIONS = (
     "train",
     "evaluate",
 )
+SETUP_ACTIONS = ("setup", "setup-evaluation")
 
 
 def configuration_module():
@@ -76,18 +78,22 @@ def python_path(root, profile):
     return venv / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
 
 
+def execution_profile(action, document):
+    """Select the interpreter without changing the experiment document."""
+    section = (
+        "evaluation" if action in ("evaluate", "setup-evaluation") else "environment"
+    )
+    return document[section]["profile"]
+
+
 def commands_for(action, root, path, document):
     module = configuration_module()
-    profile = (
-        document["evaluation"]["profile"]
-        if action == "evaluate"
-        else document["environment"]["profile"]
-    )
+    profile = execution_profile(action, document)
     descriptor = module.PROFILES[profile]
     python = str(python_path(root, profile))
     config = str(path.resolve())
     output = module.output_path(document, action)
-    if action == "setup":
+    if action in SETUP_ACTIONS:
         commands = [
             [
                 "uv",
@@ -128,7 +134,7 @@ def commands_for(action, root, path, document):
             config,
         ]
         if action == "verify-data":
-            command.extend(["--smoke", "--integrity-only"])
+            command.append("--integrity-only")
         return [command]
     if action == "test":
         return [[python, "-m", "pytest", "-q", "tests"]]
@@ -189,7 +195,12 @@ def main():
             path, ROOT, smoke=args.action == "smoke"
         )
         profile = document["environment"]["profile"]
-        if profile == "cuda128" and (
+        platform_profile = (
+            execution_profile(args.action, document)
+            if args.action == "setup-evaluation"
+            else profile
+        )
+        if platform_profile == "cuda128" and (
             platform.system() != "Linux" or platform.machine() != "x86_64"
         ):
             raise ValueError(
@@ -230,29 +241,27 @@ def main():
             print("+ " + shlex.join(command), flush=True)
         if args.dry_run:
             return
-        if args.action == "setup" and shutil.which("uv") is None:
+        if args.action in SETUP_ACTIONS and shutil.which("uv") is None:
             raise ValueError("Install uv first; see README.md")
-        execution_profile = (
-            document["evaluation"]["profile"] if args.action == "evaluate" else profile
-        )
+        selected_profile = execution_profile(args.action, document)
         if (
-            args.action != "setup"
-            and not python_path(ROOT, execution_profile).is_file()
+            args.action not in SETUP_ACTIONS
+            and not python_path(ROOT, selected_profile).is_file()
         ):
-            raise ValueError(
-                "Selected environment is missing; run python3 scripts/manage.py setup"
+            setup_action = "setup-evaluation" if args.action == "evaluate" else "setup"
+            setup_command = shlex.join(
+                ["python3", "scripts/manage.py", setup_action, "--config", str(path)]
             )
+            raise ValueError(f"Selected environment is missing; run {setup_command}")
         env = dict(os.environ)
-        env["UV_PROJECT_ENVIRONMENT"] = (
-            str(Path(commands[0][0]).parent.parent)
-            if args.action == "evaluate"
-            else str(python_path(ROOT, profile).parent.parent)
+        env["UV_PROJECT_ENVIRONMENT"] = str(
+            python_path(ROOT, selected_profile).parent.parent
         )
         for command in commands:
             subprocess.run(command, cwd=ROOT, env=env, check=True)
     except KeyboardInterrupt:
         print(
-            "Interrupted. Use execution.resume: true to repeat any partial epoch from last.pt.",
+            "Interrupted. Preserve run outputs. Full training can resume from a usable last.pt with train --resume.",
             file=sys.stderr,
         )
         raise SystemExit(130) from None
