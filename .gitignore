@@ -1,0 +1,85 @@
+# Python bytecode, packages, and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test, coverage, and tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+.ipynb_checkpoints/
+
+# Secrets and local credentials (safe templates remain trackable)
+.env
+.env.*
+!.env.example
+!.env.template
+secrets/
+.secrets/
+credentials/
+.aws/
+*.pem
+*.key
+
+# ECG datasets: store samples here, manifests separately in splits/
+/data/raw/
+/data/processed/
+/data/interim/
+/data/external/
+/raw_data/
+/processed_data/
+/datasets/
+*.edf
+*.bdf
+*.hea
+*.dat
+*.atr
+*.mat
+
+# Model weights and checkpoints
+/weights/
+/checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.h5
+*.hdf5
+
+# Local experiment artifacts and outputs
+/runs/
+/outputs/
+/results/
+/logs/
+/artifacts/
+/wandb/
+/mlruns/
+*.log
+
+# Local editor and OS artifacts
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Do not blanket-ignore CSV/JSON/YAML files: split manifests and configs
+# outside artifact directories must remain trackable.
+# Keep configs/, splits/, data/manifests/, and reports/ trackable.
+# Synthetic test fixtures: add only exact-path exceptions for explicitly
+# designated synthetic files with documented provenance when needed.
+# No synthetic fixture exceptions are currently designated.
