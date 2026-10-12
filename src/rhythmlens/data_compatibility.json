@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "contract_version": "challenge2017-physical-v1",
+  "sampling_rate_hz": 300,
+  "units": "mV",
+  "decoder_sha256": {
+    "audit.py": "c252876c201f18258b21762f6c0f3e558d52916c1eb9eb0fde078255dd29a6f5",
+    "data.py": "241da71767049ef6eec915939afc6105a6e5bd79c413ab103a6d85febbd505fc"
+  },
+  "review": "Existing audited decoder preserved; software lock identity is recorded independently. Decoder changes require a new reviewed contract and synthetic physical-unit/shape/duplicate tests."
+}

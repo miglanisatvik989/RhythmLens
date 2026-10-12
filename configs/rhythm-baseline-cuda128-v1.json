@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "split_dir": "splits/challenge2017-v3-seed42-v1",
+  "seed": 42,
+  "device": "cuda",
+  "cpu_threads": 2,
+  "batch_size": 16,
+  "cache_signals": true,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "epochs": 50,
+  "patience": 8,
+  "model": {
+    "stem_channels": 32,
+    "stem_kernel": 15,
+    "channels": [
+      32,
+      64,
+      128
+    ],
+    "kernel": 7,
+    "dropout": 0.1
+  },
+  "smoke_records_per_class": 4,
+  "smoke_batch_size": 4,
+  "smoke_max_steps": 200,
+  "smoke_max_seconds": 1200.0,
+  "smoke_target_accuracy": 1.0,
+  "smoke_target_loss": 0.1
+}

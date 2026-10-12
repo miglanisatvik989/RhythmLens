@@ -1,0 +1,32 @@
+name: CPU reproducibility
+on:
+  push:
+  pull_request:
+jobs:
+  synthetic-and-package:
+    runs-on: ubuntu-latest
+    env:
+      MPLCONFIGDIR: /tmp/rhythmlens-matplotlib
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.5'
+      - run: uv sync --locked --all-extras --python "$(cat .python-version)" --default-index https://pypi.org/simple
+      - run: uv pip check --python .venv/bin/python
+      - run: uv lock --check --offline --project environments/cuda128
+      - run: .venv/bin/ruff check src tests scripts environments/cuda128/verify_gpu.py
+      - run: .venv/bin/ruff format --check src tests scripts environments/cuda128/verify_gpu.py
+      - run: python3 scripts/check_repository_contracts.py
+      - run: python3 scripts/verify_frozen.py
+      - run: .venv/bin/python -m pytest -q tests
+      - run: .venv/bin/python -m build --no-isolation
+      - run: |
+          UV_PROJECT_ENVIRONMENT=/tmp/rhythmlens-wheel uv sync --locked --all-extras --no-install-project --python .venv/bin/python --default-index https://pypi.org/simple
+          uv pip install --python /tmp/rhythmlens-wheel/bin/python --no-deps dist/*.whl
+          uv pip check --python /tmp/rhythmlens-wheel/bin/python
+          cd /tmp
+          /tmp/rhythmlens-wheel/bin/rhythmlens --help
+          /tmp/rhythmlens-wheel/bin/rhythmlens --version
+          /tmp/rhythmlens-wheel/bin/python -c 'import rhythmlens; from rhythmlens.compatibility import validate_decoder_contract; validate_decoder_contract(); import rhythmlens.rhythm_training'
+      - run: .venv/bin/python scripts/manage.py show --config configs/reference.yaml
