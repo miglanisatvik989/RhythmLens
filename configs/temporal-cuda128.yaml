@@ -1,0 +1,53 @@
+schema_version: 2
+experiment:
+  name: temporal-v1
+  seed: 42
+environment:
+  profile: cuda128
+runtime:
+  device: cuda
+  gpu_index: 0
+  cpu_threads: 2
+data:
+  split_dir: splits/challenge2017-v3-seed42-v1
+preprocessing:
+  method: median-fixed-training-rms-v1
+  reuse: null
+model:
+  name: rhythm-dilated-v1
+  stem_channels: 16
+  stem_kernel: 15
+  channels:
+  - 16
+  - 24
+  - 32
+  kernel: 7
+  dropout: 0.1
+optimizer:
+  name: AdamW
+  learning_rate: 0.001
+  weight_decay: 0.0001
+training:
+  batch_size: 16
+  epochs: 50
+  patience: 8
+  cache_signals: true
+  selection_metric: macro_f1_four_classes
+smoke:
+  records_per_class: 1
+  batch_size: 4
+  max_steps: 200
+  max_seconds: 1200.0
+  target_accuracy: 1.0
+  target_loss: 0.1
+  dropout: 0.0
+paths:
+  output_root: outputs/rhythm
+execution:
+  resume: false
+  noncanonical_development: false
+evaluation:
+  profile: cpu
+  device: cpu
+  gpu_index: 0
+  cpu_threads: 2
