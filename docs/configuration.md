@@ -80,6 +80,18 @@ for a new train output; a completed output is unavailable for a new run.
 Canonical full training requires clean committed source; the explicit development
 override is recorded and does not establish canonical results.
 
+## Calibration analysis actions
+
+The [analysis protocol](experiments/temporal-calibration-deferral-v1.md) documents
+the separate analysis-only YAML schema and commands. Training schema-2 behavior
+is unchanged. `analysis-preflight` reads saved CPU predictions and provenance
+without fitting or writing outputs, even when `execution_authorized: false`.
+`analysis-fit` and `analysis-assess` require literal YAML `execution_authorized: true`
+plus `--authorize-analysis`, reviewed committed inputs and a clean source tree.
+The CLI cannot override false, missing or invalid YAML authorization values.
+The real configuration remains false; do not run real fitting or assessment
+until explicit user approval and protocol commitment.
+
 ## Resume
 
 Keep the original configuration and request continuation with an action flag:

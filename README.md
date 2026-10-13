@@ -2,7 +2,9 @@
 
 Quality-aware ECG research with reproducible rhythm-classification experiments.
 Reference and temporal models are implemented, with [recorded development results](reports/README.md).
-Quality gating, calibration, AF deferral, and final holdout evaluation remain pending.
+The [calibration/confidence-deferral workflow](docs/experiments/temporal-calibration-deferral-v1.md)
+is implemented for synthetic verification; real analysis remains unauthorized and
+pending. Signal-quality gating and final holdout evaluation remain pending.
 
 ## Run an experiment
 

@@ -42,14 +42,18 @@ class precision/recall/F1 are assigned zero. Automatic AF sensitivity is correct
 automatic AF predictions divided by all AF-labeled records. Future deferred AF
 records remain in that denominator.
 
-The classifier currently assesses every eligible record: coverage 100%, implemented
+The recorded baseline classifier assesses every eligible record: coverage 100%, implemented
 deferrals zero. Predicting the noisy class is not an implemented deferral mechanism.
 Probabilities are uncalibrated softmax.
 
 Recorded results are checkpoint-selected validation evidence, not final holdout
 or clinical validation. The [multi-seed protocol](experiments/rhythm-multiseed-v1.md)
-reports all seeds without best-seed selection. Quality gating, calibration,
-AF deferral, and final holdout evaluation remain pending. Freeze model, thresholds,
+reports all seeds without best-seed selection. A separate
+[calibration/confidence-deferral workflow](experiments/temporal-calibration-deferral-v1.md)
+is implemented and synthetically tested; real fitting and assessment are unauthorized
+and pending. It uses null for undefined metrics, with an explicitly named legacy
+zero-fill macro F1 for comparison. Signal-quality gating and final holdout evaluation
+remain pending. Freeze model, thresholds,
 quality rules, and analysis choices before accessing holdout signals.
 
 CPU deterministic resume has synthetic regression coverage. Exact mid-epoch

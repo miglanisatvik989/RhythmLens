@@ -22,9 +22,23 @@ holdout evidence or clinical validation. Architectures differ in multiple
 properties. Holdout signals were not accessed. Quality gating, calibration,
 and AF deferral remain pending.
 
-The [fixed follow-up](../docs/experiments/rhythm-multiseed-v1.md) defines the
-seed42/43/44 comparison. Consult its completed result report when published here;
-the table above remains the original seed42 evidence.
+The [completed multiseed report](rhythm-multiseed-v1.md) and
+[full-precision summary](rhythm-multiseed-v1.json) record all six reference/temporal
+seed42/43/44 runs under the [fixed protocol](../docs/experiments/rhythm-multiseed-v1.md).
+The table above remains the original seed42 evidence. All reported performance
+is checkpoint-selected validation evidence; the holdout remains untouched.
+
+## Calibration and confidence deferral
+
+The [development protocol](../docs/experiments/temporal-calibration-deferral-v1.md)
+and [verification evidence](temporal-calibration-deferral-v1-verification.md)
+describe the implemented logits-only workflow and synthetic checks. Real role
+assignment, calibration, threshold selection and assessment remain pending.
+The real YAML has `execution_authorized: false`; fitting and assessment require
+literal YAML true plus explicit CLI authorization, reviewed committed inputs
+and a clean source tree. CLI flags cannot override YAML false. Signal-quality
+gating remains unavailable. Further results will be exploratory because validation
+already informed checkpoint and architecture selection.
 
 ## Dated verification milestones
 
