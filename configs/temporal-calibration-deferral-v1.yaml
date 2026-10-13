@@ -3,7 +3,7 @@ protocol_schema: rhythmlens-calibration-deferral-v1
 protocol_id: temporal-calibration-deferral-v1
 status: implemented_synthetic_verification_real_results_pending
 protocol_document: docs/experiments/temporal-calibration-deferral-v1.md
-execution_authorized: false
+execution_authorized: true
 evidence_status: exploratory_validation_reuse
 inputs:
   report: reports/rhythm-multiseed-v1.json
