@@ -42,15 +42,31 @@ class precision/recall/F1 are assigned zero. Automatic AF sensitivity is correct
 automatic AF predictions divided by all AF-labeled records. Future deferred AF
 records remain in that denominator.
 
-The classifier currently assesses every eligible record: coverage 100%, implemented
+The recorded baseline classifier assesses every eligible record: coverage 100%, implemented
 deferrals zero. Predicting the noisy class is not an implemented deferral mechanism.
 Probabilities are uncalibrated softmax.
 
-Recorded results are checkpoint-selected validation evidence, not final holdout
-or clinical validation. The [multi-seed protocol](experiments/rhythm-multiseed-v1.md)
-reports all seeds without best-seed selection. Quality gating, calibration,
-AF deferral, and final holdout evaluation remain pending. Freeze model, thresholds,
-quality rules, and analysis choices before accessing holdout signals.
+The original baseline results are checkpoint-selected validation evidence. The
+[multi-seed protocol](experiments/rhythm-multiseed-v1.md) reports all seeds without
+best-seed selection. The completed [calibration/confidence-deferral analysis](../reports/temporal-calibration-deferral-v1.md)
+uses validation-derived roles and is exploratory because those recordings already
+informed model selection. Its null undefined metrics and explicitly named legacy
+zero-fill macro F1 remain distinct. Confidence is not signal quality.
+
+The [completed internal rhythm-only evaluation](../reports/temporal-internal-rhythm-evaluation-v1.md)
+uses all three fixed temporal checkpoints equally, with calibration, deferral and
+quality gating disabled. Mean automatic AF sensitivity is 80.70%, automatic
+four-class error 14.33%, and assessed coverage 100%. Predicted ~ cases remain
+assessed outcomes, separately reported from rhythm outputs and deferrals. The
+[exposure audit](../reports/final-evaluation-integrity-audit-v1.md) documents
+pre-freeze decoding, two holdout preview exposures, public labels and unknown
+patient/source/time independence. Bootstrap intervals condition on the observed
+class mix and fixed checkpoints, without accounting for unknown patient clusters.
+This is qualified internal rhythm-only evidence, not clinical validation or
+validation of quality-aware triage. **The holdout is consumed for future
+development.** Signal-quality assessment remains pending; future quality-aware
+choices must be frozen on development evidence and evaluated separately. Ignored
+artifacts still need external archival; a Git report is not an artifact backup.
 
 CPU deterministic resume has synthetic regression coverage. Exact mid-epoch
 continuation, hardware-independent identity, and deterministic CUDA resume

@@ -27,6 +27,11 @@ ACTIONS = (
     "smoke",
     "train",
     "evaluate",
+    "final-preflight",
+    "final-evaluate",
+    "analysis-preflight",
+    "analysis-fit",
+    "analysis-assess",
 )
 SETUP_ACTIONS = ("setup", "setup-evaluation")
 
@@ -186,11 +191,91 @@ def main():
         action="store_true",
         help="Explicit train resume without changing YAML",
     )
+    parser.add_argument("--execution-id", help="New immutable analysis run identifier")
+    parser.add_argument(
+        "--authorize-analysis",
+        action="store_true",
+        help="Explicitly authorize real logits analysis after protocol commitment",
+    )
+    parser.add_argument(
+        "--authorize-evaluation",
+        action="store_true",
+        help="Explicitly authorize the one-time frozen internal rhythm evaluation",
+    )
     args = parser.parse_args()
     try:
-        ensure_yaml()
+        if args.action.startswith("final-"):
+            try:
+                import yaml
+            except ImportError:
+                raise ValueError(
+                    "Final evaluation requires existing pinned PyYAML; installation forbidden"
+                ) from None
+            if yaml.__version__ != "6.0.3":
+                raise ValueError(
+                    "Final evaluation requires existing PyYAML 6.0.3; installation forbidden"
+                )
+        else:
+            ensure_yaml()
         module = configuration_module()
         path = args.config if args.config.is_absolute() else ROOT / args.config
+        if args.action.startswith("final-"):
+            if (
+                args.resume
+                or args.smoke
+                or args.execution_id
+                or args.authorize_analysis
+            ):
+                raise ValueError(
+                    "Training/analysis options do not apply to final evaluation"
+                )
+            command = [
+                str(python_path(ROOT, "cpu")),
+                "-m",
+                "rhythmlens.final_evaluation",
+                "preflight" if args.action == "final-preflight" else "evaluate",
+                "--config",
+                str(path.resolve()),
+            ]
+            if args.authorize_evaluation:
+                if args.action != "final-evaluate":
+                    raise ValueError("Runtime authorization requires final-evaluate")
+                command.append("--authorize-evaluation")
+            print("+ " + shlex.join(command), flush=True)
+            if not args.dry_run:
+                subprocess.run(command, cwd=ROOT, check=True)
+            return
+        if args.authorize_evaluation:
+            raise ValueError("--authorize-evaluation requires final-evaluate")
+        if args.action.startswith("analysis-"):
+            # Separate analysis schema; the existing training loader is unchanged.
+            import yaml
+
+            if (
+                yaml.safe_load(path.read_text()).get("protocol_schema")
+                != "rhythmlens-calibration-deferral-v1"
+            ):
+                raise ValueError("Analysis requires the calibration/deferral schema")
+            if args.resume or args.smoke:
+                raise ValueError("Training options do not apply to analysis")
+            command = [
+                str(python_path(ROOT, "cpu")),
+                "-m",
+                "rhythmlens.calibration",
+                args.action,
+                "--config",
+                str(path.resolve()),
+            ]
+            if args.execution_id:
+                command.extend(["--execution-id", args.execution_id])
+            if args.authorize_analysis:
+                command.append("--authorize-analysis")
+            print("+ " + shlex.join(command), flush=True)
+            if not args.dry_run:
+                subprocess.run(command, cwd=ROOT, check=True)
+            return
+        if args.execution_id or args.authorize_analysis:
+            raise ValueError("Analysis options require an analysis action")
         flat, document = module.load_experiment(
             path, ROOT, smoke=args.action == "smoke"
         )

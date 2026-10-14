@@ -80,6 +80,35 @@ for a new train output; a completed output is unavailable for a new run.
 Canonical full training requires clean committed source; the explicit development
 override is recorded and does not establish canonical results.
 
+## Calibration analysis actions
+
+The [analysis protocol](experiments/temporal-calibration-deferral-v1.md) documents
+the separate analysis-only YAML schema and commands. Training schema-2 behavior
+is unchanged. `analysis-preflight` reads saved CPU predictions and provenance
+without fitting or writing outputs, even when `execution_authorized: false`.
+`analysis-fit` and `analysis-assess` require literal YAML `execution_authorized: true`
+plus `--authorize-analysis`, reviewed committed inputs and a clean source tree.
+The CLI cannot override false, missing or invalid YAML authorization values.
+The completed exploratory run was explicitly authorized at
+`47d198e15f0fdcfbd2210ea9cf6700af7a1b3889`; its configuration remains true as
+execution provenance. See the [completed report](../reports/temporal-calibration-deferral-v1.md).
+Existing outputs must not be overwritten or silently retried. Authorization does
+not permit policy changes or holdout access through calibration commands.
+
+## Completed internal rhythm-only evaluation
+
+The separate `final-preflight` and `final-evaluate` actions use the
+[frozen internal protocol](experiments/temporal-final-evaluation-v1.md), not the
+training or calibration schemas. `final-evaluate` requires committed literal
+YAML true, explicit runtime authorization and a clean tree. All three checkpoints
+and the one-time output path are fixed; calibration, deferral and quality gating
+are disabled. Execution at `bbdf121a81557bb4e614a452a1ffb42ba6a9b27d` is
+[complete](../reports/temporal-internal-rhythm-evaluation-v1.md). The YAML remains
+true as provenance; the occupied output root rejects further evaluation. Do not
+rerun, rename outputs to bypass the collision, or treat this authorization as
+permission for a new experiment. The holdout is consumed for future development;
+quality-aware triage needs separate evaluation evidence.
+
 ## Resume
 
 Keep the original configuration and request continuation with an action flag:

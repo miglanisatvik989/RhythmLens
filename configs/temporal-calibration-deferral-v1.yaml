@@ -1,0 +1,136 @@
+# Analysis-only configuration; never pass to training actions.
+protocol_schema: rhythmlens-calibration-deferral-v1
+protocol_id: temporal-calibration-deferral-v1
+status: implemented_synthetic_verification_real_results_pending
+protocol_document: docs/experiments/temporal-calibration-deferral-v1.md
+execution_authorized: true
+evidence_status: exploratory_validation_reuse
+inputs:
+  report: reports/rhythm-multiseed-v1.json
+  split_dir: splits/challenge2017-v3-seed42-v1
+  validation_manifest: splits/challenge2017-v3-seed42-v1/validation.csv
+  source_manifest: data/manifests/challenge2017-v3/records.csv
+  source_audit: data/manifests/challenge2017-v3/audit.json
+  source_provenance: data/manifests/challenge2017-v3/provenance.json
+  eligible_records: 1280
+  eligible_af_records: 114
+  label_order: [N, A, O, '~']
+  architecture: rhythm-dilated-v1
+  models:
+    - seed: 42
+      config: configs/temporal-cuda128.yaml
+      best_epoch: 31
+      checkpoint_sha256: 217110e48c995fcb8eac9a7eb3885356170fd461dc50b333cd62fd1022d2031d
+      prediction_path: outputs/rhythm/temporal-v1/cuda128/seed42/evaluate/validation-predictions.csv
+      prediction_sha256: e11ad0f1bcac963f82f2143535b57f44c11fd323790333430875f20c06767d78
+    - seed: 43
+      config: configs/temporal-cuda128-seed43.yaml
+      best_epoch: 42
+      checkpoint_sha256: c420c2a96ecf1e9f25ad4a7417a321a96b9eb47c217db613d9502c26e2bcde74
+      prediction_path: outputs/rhythm/temporal-v1/cuda128/seed43/evaluate/validation-predictions.csv
+      prediction_sha256: 7dc18886c41d6cde5c1e43a70ec96534c09bbee9193332850d843d983e30ae0a
+    - seed: 44
+      config: configs/temporal-cuda128-seed44.yaml
+      best_epoch: 39
+      checkpoint_sha256: e6965190d29b0214a732f6bf5ef4172daaae3ede30b2e549c8d7c9760a8791c5
+      prediction_path: outputs/rhythm/temporal-v1/cuda128/seed44/evaluate/validation-predictions.csv
+      prediction_sha256: c48b6f5fc05a49b78f83f85dcd02c73199b82dc765833dddfacf3925cd45886c
+  preprocessing_sha256: a4719420f5b867e3870386b488c954fb85f1b695f2264f57235cf0e0b80783b6
+  assignment_sha256: fb27f37a8f9dcd1d8931116e252290a68be29844b5b81badc3223954184054c7
+  missing_or_invalid_input: block_never_drop_or_regenerate
+partition:
+  seed: 20261013
+  algorithm: validation-group-greedy-sha256-v1
+  group_key: duplicate_group
+  related_records: frozen_exact_groups_new_relations_block_for_review
+  verified_new_subject_or_source_time_relation: block_for_review
+  patient_independence: unverified
+  role_order: [calibration-fit, threshold-select, dev-assess]
+  fractions: [0.40, 0.30, 0.30]
+  require_all_classes_per_role: true
+  same_roles_for_all_seeds: true
+  manifest_path: data/manifests/temporal-calibration-deferral-v1/roles.csv
+  manifest_sha256: null # Pending; do not generate during drafting.
+calibration:
+  method: scalar_temperature_four_class_nll
+  fit_role: calibration-fit
+  per_seed: true
+  weighting: equal_per_recording
+  inverse_temperature_bounds: [0.05, 20.0]
+  solver: deterministic_golden_section
+  absolute_bracket_tolerance: 1.0e-8
+  max_iterations: 256
+  additional_candidates: [lower_bound, upper_bound, beta_one, final_midpoint]
+  ties: [closest_beta_to_one, smaller_beta]
+  nonconvergence: block_affected_arm
+  fitted_temperatures: null
+selection:
+  role: threshold-select
+  per_seed: true
+  confidence: max_calibrated_probability
+  accept_operator: greater_than_or_equal
+  threshold_grid: {integer_start: 0, integer_stop_inclusive: 100, divisor: 100}
+  min_overall_coverage: 0.90
+  min_af_coverage: 0.90
+  objective: minimize_accepted_error_fraction
+  ties: [higher_overall_coverage, smaller_threshold]
+  ratio_comparisons: exact_integer_cross_products
+  selected_thresholds: null
+decision:
+  argmax_tie_order: [N, A, O, '~']
+  noisy_prediction: assessed_four_class_outcome
+  noisy_prediction_is_deferral: false
+  signal_quality_gate: disabled_unavailable
+  technical_failures: explicit_ledger_and_block_complete_assessment
+assessment:
+  binary_af_scope: true_N_A_O_existing_p_A_no_renormalization
+  role: dev-assess
+  unlock_after: all_three_inputs_verified_and_calibrators_and_thresholds_frozen
+  arms: [raw_no_deferral, calibrated_no_deferral, calibrated_confidence_deferral]
+  retuning: forbidden
+  metrics:
+    - four_class_confusion_and_support
+    - all_eligible_outcome_matrix
+    - accepted_accuracy_selective_risk_precision_recall_f1_macro_f1
+    - assessed_coverage_and_rhythm_output_coverage
+    - deferral_counts_rates_reasons_and_af_breakdown
+    - automatic_af_sensitivity_over_all_labeled_af
+    - accepted_af_recall_and_precision
+    - all_eligible_nll_multiclass_brier_and_top_label_ece
+    - true_N_A_O_binary_af_brier_and_reliability_with_excluded_noisy_counts
+  reliability_bins: {count: 15, spacing: equal_width, range: [0.0, 1.0]}
+  multiclass_brier: sum_over_classes_no_class_normalization
+  undefined_denominators: null_with_reason
+  compatibility_metric: legacy_zero_fill_macro_f1
+  seed_aggregation: equal_weight_mean_and_sample_sd_defined_values_with_n
+  paired_arm_differences: per_seed_same_cases
+  statistical_significance_claims: false
+  bootstrap: disabled
+runtime:
+  device: cpu
+  dtype: float64
+  cpu_threads: 2
+  new_dependencies: forbidden_without_review
+numerical_verification:
+  probability_sum_atol: 1.0e-6
+  probability_atol: 1.0e-7
+  probability_rtol: 1.0e-5
+  baseline_metric_atol: 1.0e-5
+  baseline_metric_rtol: 1.0e-5
+provenance:
+  dependency_locks:
+    uv.lock: 71231d200792985f74f8a2c9ebff633621ad86d6efcc59b2b0063b5a2301c86d
+    environments/cuda128/uv.lock: 2c5ed7cb262d94c1e2d334af9955de796ddf43e8d8be73f0c32976cdc75474a1
+  require_exact_installed_versions: true
+  require_input_and_output_sha256_and_parent_links: true
+  local_output_template: outputs/calibration/temporal-calibration-deferral-v1/<execution-id>/seed{seed}
+  overwrite_existing: false
+restrictions:
+  holdout_signals_accessed: false
+  new_inference: false
+  retraining: false
+  best_seed_selection: false
+  ensemble: false
+  preprocessing_refit: false
+  modify_frozen_splits_or_existing_artifacts: false
+  commit_or_push: false

@@ -2,7 +2,12 @@
 
 Quality-aware ECG research with reproducible rhythm-classification experiments.
 Reference and temporal models are implemented, with [recorded development results](reports/README.md).
-Quality gating, calibration, AF deferral, and final holdout evaluation remain pending.
+The [completed exploratory calibration/deferral report](reports/temporal-calibration-deferral-v1.md)
+records all three temporal seeds using the [frozen protocol](docs/experiments/temporal-calibration-deferral-v1.md).
+Calibration effects were mixed; confidence deferral increased accepted-case F1
+but reduced automatic AF sensitivity. The [completed internal rhythm-only evaluation](reports/temporal-internal-rhythm-evaluation-v1.md)
+reports mean automatic AF sensitivity 80.70%, automatic four-class error 14.33%,
+and 100% assessed coverage. Signal-quality gating remains pending.
 
 ## Run an experiment
 
@@ -30,7 +35,11 @@ idempotent when both profiles are the same.
 
 Preprocessing fits automatically on the **5,969 training records**. The
 **1,280 validation records** select checkpoints. The **1,279 holdout records**
-remain untouched. Canonical training requires clean committed source.
+now have completed qualified internal rhythm-only evaluation and are consumed
+for future development.
+The [integrity audit](reports/final-evaluation-integrity-audit-v1.md) documents
+pre-freeze signal decoding and two holdout preview exposures; patient, source and
+time independence remain unverified. Canonical training requires clean committed source.
 For a new run, choose and commit a new experiment configuration with a distinct
 name/seed. To reproduce historical inputs, use a fresh checkout at their recorded revision.
 
@@ -51,3 +60,11 @@ Use `make help` or `python3 scripts/manage.py --help` to see the actions.
 Patient identifiers are unavailable; recording splits preserve verified duplicate
 groups but do not establish patient independence. This research system has not
 been clinically validated.
+
+The [dedicated rhythm-only internal evaluation](docs/experiments/temporal-final-evaluation-v1.md)
+keeps all three temporal checkpoints fixed and equally reported, with calibration,
+deferral and quality gating disabled. The [completed report](reports/temporal-internal-rhythm-evaluation-v1.md)
+records all three seeds and the execution revision. This does not validate
+quality-aware triage. The holdout is consumed; subsequent quality-gating changes
+need separate evaluation evidence. Ignored outputs still need external archival;
+a Git report is not an artifact backup.

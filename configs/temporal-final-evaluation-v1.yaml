@@ -1,0 +1,109 @@
+# Dedicated internal rhythm-only evaluation; real execution remains disabled.
+protocol_schema: rhythmlens-temporal-internal-evaluation-v1
+execution_authorized: true
+scope: qualified_internal_frozen_rhythm_only
+protocol_document: docs/experiments/temporal-final-evaluation-v1.md
+integrity_audit: reports/final-evaluation-integrity-audit-v1.md
+output_root: outputs/final-evaluation/temporal-raw-v1/internal-holdout-v1
+split_dir: splits/challenge2017-v3-seed42-v1
+report: reports/rhythm-multiseed-v1.json
+report_sha256: b4b98cef0fedf2e1da7d1a904a86572c5434dd799a033a7625fd348632c5b3f8
+eligible_records: 1279
+class_supports:
+- 761
+- 114
+- 362
+- 42
+holdout_sha256: d7aad3212e0052f33ad86666a3844dee146f99cc584c972854caf91b331b0717
+data_identity:
+  assignment_sha256: fb27f37a8f9dcd1d8931116e252290a68be29844b5b81badc3223954184054c7
+  dependency_lock_sha256: 4ff3ef044d9e70d26b8a5c0494478e30cbc3f73ac3ecd94c109e1dd1adf44c8d
+  frozen_metadata_sha256: 2c887a1934fc93f40861a87522b5b2b5aee310aa622335e7912beffc0e26c121
+  source_audit_sha256: 2e85add08052656eed0b72ddf0bb40c1d7163ee131aa18d796625ffb78516b40
+  source_manifest_sha256: a390f3103023df679d08544ce6f4ca9f972fb59394901a78c3027de93f1d0560
+  source_provenance_sha256: d7d79603a51d5ef35f93f5d2ae55344f0b7a6fe567d8c46b29a31575c6c4b636
+  split_version: challenge2017-v3-seed42-v1
+  train_sha256: 3f249df84acbbd253ca8fdc73c29fc74c5d84f04aa08e3e4aa3103ebbd51e580
+  validation_sha256: 19b515593afa35b98a3c86fe0c45f32e67e6a29a56aab6186b81e8155552e5cd
+decision:
+  calibration: false
+  deferral: false
+  quality_gating: false
+  temperature: 1
+  label_order:
+  - N
+  - A
+  - O
+  - '~'
+runtime:
+  device: cpu
+  dtype: float32
+  score_dtype: float64
+  batch_size: 16
+  cpu_threads: 2
+  python: 3.11.16
+  torch: 2.8.0+cpu
+  numpy: 2.2.6
+bootstrap:
+  replicates: 10000
+  seed: 20261014
+  generator: PCG64
+  unit: duplicate_group
+  strata:
+  - N
+  - A
+  - O
+  - '~'
+  quantile_method: linear
+protected_sha256:
+  src/rhythmlens/rhythm_model.py: 0ff8a9e4616c9c278a26bd0fb9a7442e7d4787a7bf0ca1fb2c8f173812c27160
+  src/rhythmlens/preprocessing.py: 49886756d95ef91728ab903a60218bee52cf4776dbdfff13acb3d7100e3dd963
+  src/rhythmlens/rhythm_inference.py: b82da939a8b811fd5a4371f514b004cc82c24d6f97785b0e4b51abf8107fc514
+  src/rhythmlens/data.py: 241da71767049ef6eec915939afc6105a6e5bd79c413ab103a6d85febbd505fc
+  src/rhythmlens/audit.py: c252876c201f18258b21762f6c0f3e558d52916c1eb9eb0fde078255dd29a6f5
+  src/rhythmlens/data_compatibility.json: d9af1932fe734e375f70713d4ee88b53b985864dc9a63a880470fe05b47dc2ce
+  uv.lock: 71231d200792985f74f8a2c9ebff633621ad86d6efcc59b2b0063b5a2301c86d
+  environments/cuda128/uv.lock: 2c5ed7cb262d94c1e2d334af9955de796ddf43e8d8be73f0c32976cdc75474a1
+models:
+- seed: 42
+  best_epoch: 31
+  checkpoint: outputs/rhythm/temporal-v1/cuda128/seed42/train/best.pt
+  checkpoint_sha256: 217110e48c995fcb8eac9a7eb3885356170fd461dc50b333cd62fd1022d2031d
+  preprocessing: outputs/rhythm/temporal-v1/cuda128/seed42/train/preprocessing.json
+  preprocessing_sha256: a4719420f5b867e3870386b488c954fb85f1b695f2264f57235cf0e0b80783b6
+  config: configs/temporal-cuda128.yaml
+  config_sha256: df2bc25e8fc7fd62654cde86efd2fe4946ecab43cdd698f2f6cff364e590503b
+  resolved_config: outputs/rhythm/temporal-v1/cuda128/seed42/train/config.json
+  resolved_config_sha256: 2ff2e965d2f1f09e9bb4919e3d7fb413e8164d3dae788bb44a853163f77d7a61
+  training_report: outputs/rhythm/temporal-v1/cuda128/seed42/train/run-report.json
+  training_report_sha256: 2c2781bf904b7df2b9c37397d14bdb4378439f50c641f560dbb0301de6abad14
+  source_revision: cc0317e8389895ce094b5521b6f40986ac6ae5ed
+  source_bundle_sha256: 939e099ef4e62a161c67515bb5d3cde5947add4054727deadb475f1f1afc963c
+- seed: 43
+  best_epoch: 42
+  checkpoint: outputs/rhythm/temporal-v1/cuda128/seed43/train/best.pt
+  checkpoint_sha256: c420c2a96ecf1e9f25ad4a7417a321a96b9eb47c217db613d9502c26e2bcde74
+  preprocessing: outputs/rhythm/temporal-v1/cuda128/seed43/train/preprocessing.json
+  preprocessing_sha256: a4719420f5b867e3870386b488c954fb85f1b695f2264f57235cf0e0b80783b6
+  config: configs/temporal-cuda128-seed43.yaml
+  config_sha256: 00f07878fc338420eb7e2d7708aa3e8addea73874d5436148f0da7e989e573ac
+  resolved_config: outputs/rhythm/temporal-v1/cuda128/seed43/train/config.json
+  resolved_config_sha256: 9d4f8d648b8658b45f15fb925267563cb13f1861ffba3700cbc378fb73f8fdc4
+  training_report: outputs/rhythm/temporal-v1/cuda128/seed43/train/run-report.json
+  training_report_sha256: 205e31627a781b0b968c5bea46a1d5bd146037ec8c0fa526122d4336b9badb6b
+  source_revision: 05d8cebf4af570aaf2ab40d80c7c715b573be534
+  source_bundle_sha256: 87c1c2d8023d32f3e9cb67c0439636d22b549c8d01dc85b60a7fcb3e230078aa
+- seed: 44
+  best_epoch: 39
+  checkpoint: outputs/rhythm/temporal-v1/cuda128/seed44/train/best.pt
+  checkpoint_sha256: e6965190d29b0214a732f6bf5ef4172daaae3ede30b2e549c8d7c9760a8791c5
+  preprocessing: outputs/rhythm/temporal-v1/cuda128/seed44/train/preprocessing.json
+  preprocessing_sha256: a4719420f5b867e3870386b488c954fb85f1b695f2264f57235cf0e0b80783b6
+  config: configs/temporal-cuda128-seed44.yaml
+  config_sha256: a931d40ab2ea9fdae0e3508b4b4c555f0c9744eb2c0e14a8493f5032bee1f3bb
+  resolved_config: outputs/rhythm/temporal-v1/cuda128/seed44/train/config.json
+  resolved_config_sha256: cd954668cc7ca393da6d041b307102477133cd3a4b4745f47eebb6a94442b0e5
+  training_report: outputs/rhythm/temporal-v1/cuda128/seed44/train/run-report.json
+  training_report_sha256: b52dc8f78b46c5e7b03fd65eba8f0c72a37b18b1c0aee852e089f3d6b6905e99
+  source_revision: 05d8cebf4af570aaf2ab40d80c7c715b573be534
+  source_bundle_sha256: d844a635fb966af3317a953ea8a7eddf427b5e910a42f151c8ee7f06ab3a1dff
