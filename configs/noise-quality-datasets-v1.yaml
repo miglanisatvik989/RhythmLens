@@ -1,0 +1,71 @@
+# DECLARATIVE PROPOSAL ONLY: no launcher/acquisition support; do not execute.
+protocol_schema: rhythmlens-dataset-readiness-proposal-v1
+status: proposed_not_acquired_not_audited_unsupported
+execution_authorized: false
+launcher_supported: false
+readiness_report: reports/dataset-readiness-noise-quality-v1.md
+noise_protocol: docs/experiments/noise-robustness-v1.md
+research_date: '2026-10-14'
+tasks:
+  rhythm: challenge2017_original_N_A_O_noisy_labels
+  quality: butqdb_native_quality_annotations_only
+  corruption: nstdb_noise_shape_and_synthetic_SNR_metadata_only
+  cross_task_label_inference: forbidden
+datasets:
+  challenge2017:
+    dataset_version: '1.0.0'
+    label_version: REFERENCE-v3
+    source_provenance: data/manifests/challenge2017-v3/provenance.json
+    split_dir: splits/challenge2017-v3-seed42-v1
+    allowed_signal_partitions: [train, validation]
+    holdout: consumed_excluded_no_signal_or_prediction_access
+    manifest_sha256: a390f3103023df679d08544ce6f4ca9f972fb59394901a78c3027de93f1d0560
+    verified_subject_ids: unavailable
+  nstdb:
+    dataset_version: '1.0.0'
+    doi: 10.13026/C2HS3T
+    documentation_url: https://www.physionet.org/content/nstdb/1.0.0/
+    file_root_url: https://physionet.org/files/nstdb/1.0.0/
+    license: ODC-By-1.0
+    access: public_subject_to_license_no_terms_accepted_here
+    proposed_raw_root: data/raw/nstdb/1.0.0
+    proposed_manifest_root: data/manifests/nstdb-v1
+    metadata_files: [RECORDS, SHA256SUMS.txt, nstdb.txt]
+    selected_signal_files: [bw.dat, bw.hea, ma.dat, ma.hea, em.dat, em.hea]
+    excluded: already_corrupted_118_119_ECG_examples
+    expected_noise_records: [bw, ma, em]
+    expected_channels: [0, 1]
+    expected_sampling_rate_hz: 360
+    expected_samples_per_channel: 650000
+    source_gain: zero_uncalibrated_no_absolute_voltage_claim
+    treatment: digital_shape_unit_RMS_then_target_ECG_mV
+    verified_subject_ids: unavailable
+    acquired_file_hashes: null # Pending acquisition, never fabricated.
+    audit: pending
+    role_manifest_sha256: null
+  butqdb:
+    dataset_version: '1.0.0'
+    doi: 10.13026/kah4-0w24
+    documentation_url: https://physionet.org/content/butqdb/1.0.0/
+    file_root_url: https://physionet.org/files/butqdb/1.0.0/
+    license: CC-BY-4.0
+    access: public_subject_to_license_no_terms_accepted_here
+    proposed_raw_root: data/raw/butqdb/1.0.0
+    proposed_manifest_root: data/manifests/butqdb-v1
+    metadata_files: [RECORDS, SHA256SUMS.txt, LICENSE.txt, subject-info.csv, ann_reader.m]
+    grouping: documented_first_three_digits_subject_id_verify_on_acquisition
+    annotation_policy: retain_native_experts_consensus_and_unannotated_intervals
+    window_labels: undefined_pending_separate_quality_protocol
+    acquired_file_hashes: null
+    audit: pending
+    split_manifest_sha256: null
+restrictions:
+  acquisition: false
+  accept_terms: false
+  signal_decoding: false
+  create_windows_or_splits: false
+  training_or_inference: false
+  modify_existing_authorizations_or_artifacts: false
+preservation:
+  durable_destination: null
+  verified_external_backup: false
