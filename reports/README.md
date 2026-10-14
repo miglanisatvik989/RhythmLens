@@ -94,6 +94,11 @@ inference or new results exist. Quality models, confidence-policy retuning and
 reviewer UI remain outside this PR. The consumed holdout remains excluded, and
 complete local artifacts still need an owner-specified durable backup destination.
 
+The subsequent [NSTDB implementation verification](nstdb-adapter-v1-verification.md)
+records acquisition/audit support and a synthetic-tested noise adapter. Real
+acquisition/audit, Phase A/B execution and results remain pending; proposal
+authorizations are unchanged. See [supported commands and boundaries](../docs/nstdb-adapter.md).
+
 ## Dated verification milestones
 
 | Report | Evidence |
