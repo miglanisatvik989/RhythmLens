@@ -1,6 +1,6 @@
 # Dedicated internal rhythm-only evaluation; real execution remains disabled.
 protocol_schema: rhythmlens-temporal-internal-evaluation-v1
-execution_authorized: false
+execution_authorized: true
 scope: qualified_internal_frozen_rhythm_only
 protocol_document: docs/experiments/temporal-final-evaluation-v1.md
 integrity_audit: reports/final-evaluation-integrity-audit-v1.md
