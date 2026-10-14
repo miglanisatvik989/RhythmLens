@@ -1,0 +1,131 @@
+# NSTDB acquisition, audit and noise adapter
+
+This milestone implements standalone acquisition/audit commands and a library
+adapter for the frozen [noise proposal](experiments/noise-robustness-v1.md).
+It does **not** implement the Phase A/B experiment runner. Both proposal YAMLs
+remain declarative and unauthorized; the Challenge decoder is unchanged.
+Real acquisition and audit are pending. No new experimental results exist.
+
+Implementation clarification recorded before implementation: publisher SHA256
+checksums cover required release files except the checksum index itself, which
+cannot contain its own digest. The index's digest is recorded as provenance,
+not represented as a publisher-authenticated self-check. Explicit download trusts
+the versioned PhysioNet HTTPS endpoint. Local import trusts the owner's supplied
+publisher index; consistency checks alone do not authenticate that index. This
+is a provenance limitation, not a new execution approval mechanism. No numerical
+or experimental proposal rules change.
+
+Original bytes are preserved. Existing destination directories (even incomplete
+ones) block acquisition/audit publication; failures are never automatically
+retried or overwritten. Interrupted writes must be investigated and retained.
+The official RECORDS/index may list excluded 118/119 examples; required membership
+is checked without acquiring those examples. Only the nine selected files are
+copied/downloaded. No other data or model files are read by these commands.
+
+## Supported commands
+
+Run from the repository with the existing CPU environment. These examples are
+for a **future explicitly requested acquisition**; they were not run on real data
+for this milestone. Choose one source, not both:
+
+```sh
+# Import the owner's nine original release files; never contacts the network.
+.venv/bin/python -m rhythmlens.nstdb acquire --local /path/to/nstdb-1.0.0
+# Alternatively, explicitly download only the nine versioned release files.
+.venv/bin/python -m rhythmlens.nstdb acquire --download
+# Verify acquisition provenance/checksums and audit digital noise, without ECG/model I/O.
+.venv/bin/python -m rhythmlens.nstdb audit \
+  --output data/manifests/nstdb-v1/audit-v1
+```
+
+`acquire` accepts `--raw` (default `data/raw/nstdb/1.0.0`) and `--manifest`
+(default `data/manifests/nstdb-v1`). `audit` accepts `--raw`, `--provenance`
+(default `<default manifest>/provenance.json`) and requires a new `--output`
+directory. Overriding the manifest does not implicitly change the audit provenance
+argument. Raw/noise bytes must stay in ignored raw storage; use trackable manifest
+locations only for compact JSON. No acquisition happens on module import,
+`--help`, audit, adapter calls, or tests. No YAML execution parser was added;
+these commands do not interpret either proposal's authorization or restrictions
+as runnable configuration. There is no Phase A/B command in this milestone.
+
+## Outputs and failure meanings
+
+| File/schema | Definition |
+| --- | --- |
+| `provenance.json` / `rhythmlens-nstdb-acquisition-v1` | Version/DOI, attribution/license, explicit source method, per-file official URL, UTC acquisition time, byte size and SHA256, publisher-checksum status; checksum-index trust limitation; real audit/archive initially pending |
+| `audit.json` / `rhythmlens-nstdb-audit-v1` | Overall passed/failed, input hashes, canonical sorted compact-JSON provenance SHA256, per-record format/channel/header/rate/length/initial/checksum checks, per-channel missing counts, errors, role descriptors and NumPy version |
+| `roles.json` / `rhythmlens-nstdb-roles-v1` | Written only after a passed audit: audit-file SHA256 and nine role descriptors with raw half-open bounds, two channels, source hash, resampling/trim/SciPy identity, pool length and pool SHA256 |
+| `sha256.json` | Byte-level SHA256 index of published audit and (if passed) roles JSON; no self-hash claim |
+
+Publisher checksum/membership/provenance failures stop before signal decoding.
+Decoded missing sentinel `-2048`, invalid header/length, initial value or 16-bit
+signed checksum mismatch blocks readiness. Structural record failures remain in
+the three-record inventory; overall failed audits never publish a usable role
+manifest. Failure reports may retain successfully examined records/roles as partial
+evidence. Failure exits nonzero. Exceptions before auditing (for example missing
+provenance or output collision) do not create a new output. An interrupted write
+may leave partial files, which remain untouched. Successful acquisition alone is
+not a passed signal audit.
+
+Roles are sliced at raw samples `[0,216000)`, `[237600,410400)`,
+`[432000,648000)` before independent resampling. After 300-sample trimming at
+each end the respective lengths are 179400, 143400, 179400 per channel.
+Pool digests use little-endian float64 C-order samples-by-channels bytes.
+Source gain remains unknown: digital shape values are never calibrated mV.
+Temporal separation provides neither subject nor source independence.
+
+## Adapter API and boundaries
+
+`rhythmlens.nstdb.load_pools(raw, provenance, role)` revalidates release bytes,
+provenance, all three headers and digital records, then returns immutable pool
+objects. `rhythmlens.noise.stress_plan` requires `partition="validation"`;
+`training_plan` requires `partition="train"`. Both implement the proposal's
+compact UTF-8 JSON/SHA256/little-endian PCG64 keys and exact draw orders. They
+contain no model, arm or severity draw in a stress plan. `apply_plan` verifies the
+exact plan and pool identity, selects one contiguous slice without wrapping,
+and applies noise to a caller-supplied **physical mV, 300 Hz** ECG array. It cannot
+load ECG files or establish that a caller's array units/partition are truthful.
+The future runner must verify source/split/unit identities before supplying arrays.
+
+`corrupt_physical` is the pure numerical primitive: mean-center the selected
+unitless shape, normalize its RMS, scale using median-centered ECG RMS and the
+requested project SNR, and add in physical mV. Metadata report requested/achieved
+SNR, reference/added RMS, added peak and flat accounting. `apply_plan` also records
+plan/role identity and original/corrupted physical digests. The caller then uses
+unchanged `transform_physical(corrupted, saved_state)`; no preprocessing is fitted
+or automatically loaded here. Test fixtures supply an explicitly synthetic state.
+Post-transform digests and complete case ledgers remain future runner work.
+
+Reference RMS below `1e-8` retains the unchanged case, adds zero, and reports null
+achieved SNR with `flat_or_near_flat_reference`; it is not a deferral. Zero or
+nonfinite selected-noise RMS, invalid lengths, nonfinite ECG, overflow, altered
+plans/pools or incompatible SciPy raise technical failures without redrawing or
+substituting. The future runner must retain eligible denominators and record these
+failures; this library does not implement an experiment ledger or metrics engine.
+Global-RMS SNR differs from the official NST QRS/weighted-noise definition.
+Noise labels are corruption types, never rhythm or BUT quality labels.
+
+## Verification and next step
+
+Generated synthetic fixtures exercise packed decoding against independent WFDB
+digital decoding, byte/checksum/member/collision handling, failed-audit retention,
+role/filter isolation, exact RNG draws and NumPy/Torch global RNG isolation,
+SNR, flat/invalid cases, length preservation and unchanged saved preprocessing.
+No clinical ECG, real NSTDB, checkpoints or predictions are test inputs.
+
+Real acquisition, digital audit, source/role manifest review and archival remain
+pending. The owner must specify a durable backup destination and restoration
+checks: ignored local noise and historical run outputs are not backed up by Git
+reports or hash indexes. This gap does not prevent synthetic implementation.
+Next request explicit real acquisition, run the audit once into a new output,
+review identities/role hashes and preserve original bytes externally. Then
+implement and synthetically verify Phase A pairing, baseline reproduction,
+complete case accounting/lifecycle and scoring before separately authorizing any
+validation-only inference. Phase B training, BUT quality assessment, deferral and
+reviewer interface remain later work. The consumed Challenge holdout is excluded;
+no new independently sealed final cohort is established here.
+
+Primary format references: [WFDB format 212](https://physionet.org/physiotools/wag/signal-5.htm),
+[WFDB header semantics](https://physionet.org/physiotools/wag/header-5.htm),
+[WFDB missing-value definitions](https://github.com/MIT-LCP/wfdb-python/blob/v4.3.0/wfdb/io/_signal.py),
+and [NSTDB release](https://www.physionet.org/content/nstdb/1.0.0/).

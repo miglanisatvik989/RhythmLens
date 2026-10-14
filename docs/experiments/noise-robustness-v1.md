@@ -6,6 +6,11 @@ choices; it does not implement a runner or authorize acquisition, training or
 inference. `configs/noise-robustness-v1.yaml` has literal
 `execution_authorized: false`. Do not pass it to any launcher action.
 
+Implementation follow-up: [NSTDB acquisition/audit and adapter](../nstdb-adapter.md)
+now supplies the separate noise-only CLI and library primitives. The proposal
+YAMLs remain unsupported and false; Phase A/B runner, real acquisition/audit
+and results remain pending. Original method choices below are unchanged.
+
 Goal: test whether noise augmentation, calibrated uncertainty and separate quality
 assessment can reduce incorrect automatic rhythm predictions while retaining AF
 detections and manageable review workload. Future confidence-only versus quality
