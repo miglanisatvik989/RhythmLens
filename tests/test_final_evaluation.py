@@ -35,7 +35,12 @@ def rows(labels=("N", "A", "O", "~")):
 
 def test_fixed_config_authorization_and_policy(tmp_path):
     c = final.load_config(CONFIG)
-    assert c["execution_authorized"] is False
+    for authorized in (False, True):
+        changed = copy.deepcopy(c)
+        changed["execution_authorized"] = authorized
+        path = tmp_path / f"authorization-{authorized}.yaml"
+        path.write_text(yaml.safe_dump(changed))
+        assert final.load_config(path)["execution_authorized"] is authorized
     for key, value in [
         ("execution_authorized", "true"),
         ("output_root", "outputs/bypass"),
@@ -47,23 +52,27 @@ def test_fixed_config_authorization_and_policy(tmp_path):
         path.write_text(yaml.safe_dump(changed))
         with pytest.raises(ValueError):
             final.load_config(path)
-    c["execution_authorized"] = True
-    path = tmp_path / "authorized.yaml"
-    path.write_text(yaml.safe_dump(c))
-    assert final.load_config(path)["execution_authorized"] is True
 
 
 def test_unauthorized_never_reads_inputs_or_creates_output(tmp_path, monkeypatch):
     c = final.load_config(CONFIG)
+    c["execution_authorized"] = False
+    path = tmp_path / "unauthorized.yaml"
+    path.write_text(yaml.safe_dump(c))
+    c = final.load_config(path)
     monkeypatch.setattr(
         final, "metadata_preflight", lambda *a: pytest.fail("input access")
     )
     for authorized in (False, True):
         with pytest.raises(ValueError, match="execution_authorized"):
-            final.execute(tmp_path, CONFIG, c, authorized)
+            final.execute(tmp_path, path, c, authorized)
+        assert not (tmp_path / "outputs").exists()
     c["execution_authorized"] = True
+    path = tmp_path / "authorized.yaml"
+    path.write_text(yaml.safe_dump(c))
+    c = final.load_config(path)
     with pytest.raises(ValueError, match="authorize-evaluation"):
-        final.execute(tmp_path, CONFIG, c, False)
+        final.execute(tmp_path, path, c, False)
     assert not (tmp_path / "outputs").exists()
 
 
