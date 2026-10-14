@@ -17,16 +17,18 @@ using the same frozen split and training preprocessing.
 - [Reference report](baselines/reference-seed42.json)
 - [Temporal report](baselines/temporal-seed42.json)
 
-These are selected-checkpoint validation results from one seed, not independent
-holdout evidence or clinical validation. Architectures differ in multiple
-properties. Holdout signals were not accessed. Quality gating, calibration,
-and AF deferral remain pending.
+These are historical selected-checkpoint validation results from one seed, not
+independent holdout evidence or clinical validation. Architectures differ in
+multiple properties. Those runs did not access holdout signals. Later calibration
+and internal rhythm-only evaluation milestones are documented below; quality
+gating remains pending.
 
 The [completed multiseed report](rhythm-multiseed-v1.md) and
 [full-precision summary](rhythm-multiseed-v1.json) record all six reference/temporal
 seed42/43/44 runs under the [fixed protocol](../docs/experiments/rhythm-multiseed-v1.md).
 The table above remains the original seed42 evidence. All reported performance
-is checkpoint-selected validation evidence; the holdout has no recorded model-performance evaluation; see the exposure audit below.
+is checkpoint-selected validation evidence; the separate completed internal
+rhythm-only evaluation is reported below.
 
 ## Calibration and confidence deferral
 
@@ -42,32 +44,46 @@ different subset but reduced automatic AF sensitivity; this does not establish
 overall improvement. Results are exploratory because validation already informed
 checkpoint and architecture selection. No policy retuning or deployment
 recommendation follows from these outcomes. Signal-quality gating remains
-unavailable and holdout evaluation remains excluded.
+unavailable. That calibration analysis excluded holdout; the separately authorized
+internal rhythm-only evaluation is reported below.
 
 Role metadata are trackable at the protocol-specified paths. Complete outputs
 remain ignored and local: no repository archival mechanism was found, and a Git
 commit of the report/role metadata would not preserve those output bytes.
 
-## Final-evaluation preparation
+## Completed internal rhythm-only evaluation
 
-The [integrity audit](final-evaluation-integrity-audit-v1.md) verifies recording
-and exact-duplicate separation but documents pre-freeze access to eventual
-holdout signals, including two previewed holdout IDs. No holdout model-performance
-evaluation is recorded; strict never-seen status and patient/source/time
-independence cannot be established. The [internal rhythm-only protocol](../docs/experiments/temporal-final-evaluation-v1.md)
-uses all three raw temporal checkpoints equally, without calibration or deferral,
-and documents the implemented dedicated evaluator and synthetic verification.
-Real execution remains unauthorized. This is a qualified internal evaluation of
-the frozen rhythm-only baseline, not final validation of the eventual quality-aware
-system. Inspecting its outcomes consumes this holdout for future development;
-subsequent quality-gating changes need separate evaluation evidence. Existing
-frozen artifacts and all exposure/independence limitations are preserved.
+The [completed report](temporal-internal-rhythm-evaluation-v1.md) records execution
+revision `bbdf121a81557bb4e614a452a1ffb42ba6a9b27d`, all three fixed temporal seeds,
+1,279 cases per seed (N=761, A=114, O=362, ~=42), confusion matrices, complete AF
+accounting, probability metrics, uncertainty and verified artifact hashes.
+Mean automatic AF sensitivity was **80.70%**, automatic four-class error **14.33%**,
+and assessed coverage **100%**, with zero deferrals and technical failures.
+Predicted noisy outcomes remain assessed four-class cases and are reported
+separately from rhythm outputs and deferrals. No seed winner was selected.
+
+The [integrity audit](final-evaluation-integrity-audit-v1.md) documents pre-freeze
+signal decoding and two previewed holdout IDs, public labels, unavailable complete
+access history, and unverified patient/source/time independence. The
+[frozen protocol](../docs/experiments/temporal-final-evaluation-v1.md) and
+[implementation verification](temporal-final-evaluation-v1-verification.md)
+retain their earlier milestone wording and exact experiment identities.
+This is qualified internal rhythm-only evidence, not validation of quality-aware
+triage or clinical generalization. **The holdout is consumed for future
+development**; subsequent quality-gating changes require separate evaluation
+evidence. Bootstrap intervals condition on the observed class mix and three fixed
+checkpoints; unknown patient clusters and source shifts remain unaccounted for.
+
+Complete ignored outputs remain local and still need external archival.
+A Git report is not an artifact backup; recorded hashes cannot restore lost bytes.
+No bulk run outputs, predictions, ECG or weights are published in Git.
 
 ## Dated verification milestones
 
 | Report | Evidence |
 | --- | --- |
-| [Internal evaluator verification](temporal-final-evaluation-v1-verification.md) | Dedicated executor; synthetic checks; real evaluation pending |
+| [Completed internal rhythm-only evaluation](temporal-internal-rhythm-evaluation-v1.md) | Actual three-seed results, uncertainty and artifact integrity |
+| [Internal evaluator verification](temporal-final-evaluation-v1-verification.md) | Historical dedicated executor and 273-test synthetic/regression verification |
 | [Environment setup](environment-setup.md) | Initial installation and dependencies |
 | [Data audit](challenge2017-audit.md) | Integrity, labels, duplicates, limitations |
 | [Audit verification](challenge2017-verification.md) | Acquisition and frozen splits |

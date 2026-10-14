@@ -5,8 +5,9 @@ Reference and temporal models are implemented, with [recorded development result
 The [completed exploratory calibration/deferral report](reports/temporal-calibration-deferral-v1.md)
 records all three temporal seeds using the [frozen protocol](docs/experiments/temporal-calibration-deferral-v1.md).
 Calibration effects were mixed; confidence deferral increased accepted-case F1
-but reduced automatic AF sensitivity. Signal-quality gating and final holdout
-evaluation remain pending.
+but reduced automatic AF sensitivity. The [completed internal rhythm-only evaluation](reports/temporal-internal-rhythm-evaluation-v1.md)
+reports mean automatic AF sensitivity 80.70%, automatic four-class error 14.33%,
+and 100% assessed coverage. Signal-quality gating remains pending.
 
 ## Run an experiment
 
@@ -33,7 +34,9 @@ configured evaluator, including CPU evaluation after CUDA training; it is
 idempotent when both profiles are the same.
 
 Preprocessing fits automatically on the **5,969 training records**. The
-**1,280 validation records** select checkpoints. The **1,279 holdout records** have no recorded model-performance evaluation.
+**1,280 validation records** select checkpoints. The **1,279 holdout records**
+now have completed qualified internal rhythm-only evaluation and are consumed
+for future development.
 The [integrity audit](reports/final-evaluation-integrity-audit-v1.md) documents
 pre-freeze signal decoding and two holdout preview exposures; patient, source and
 time independence remain unverified. Canonical training requires clean committed source.
@@ -60,7 +63,8 @@ been clinically validated.
 
 The [dedicated rhythm-only internal evaluation](docs/experiments/temporal-final-evaluation-v1.md)
 keeps all three temporal checkpoints fixed and equally reported, with calibration,
-deferral and quality gating disabled. Real execution remains unauthorized. This
-is not final validation of a quality-aware system. Inspecting its outcomes consumes
-this holdout for future development; subsequent quality-gating changes need
-separate evaluation evidence.
+deferral and quality gating disabled. The [completed report](reports/temporal-internal-rhythm-evaluation-v1.md)
+records all three seeds and the execution revision. This does not validate
+quality-aware triage. The holdout is consumed; subsequent quality-gating changes
+need separate evaluation evidence. Ignored outputs still need external archival;
+a Git report is not an artifact backup.

@@ -12,7 +12,8 @@ Start with the [quickstart](../README.md). New experiments use YAML and
 | [Calibration and deferral protocol](experiments/temporal-calibration-deferral-v1.md) | Frozen logits-only analysis methods and execution gates |
 | [Completed exploratory calibration/deferral results](../reports/temporal-calibration-deferral-v1.md) | reviewed-v1 three-seed outcomes, provenance and local-preservation limitation |
 | [Final-evaluation integrity audit](../reports/final-evaluation-integrity-audit-v1.md) | Metadata-only split/exposure audit and limits of the untouched-holdout claim |
-| [Rhythm-only internal evaluation](experiments/temporal-final-evaluation-v1.md) | Dedicated three-seed evaluator, limitations and commands; execution unauthorized |
+| [Rhythm-only internal evaluation](experiments/temporal-final-evaluation-v1.md) | Frozen three-seed methods and execution history; see completed results below |
+| [Completed internal rhythm-only results](../reports/temporal-internal-rhythm-evaluation-v1.md) | All three seeds, accounting, uncertainty, artifact hashes and consumed-holdout limitations |
 | [Internal evaluator verification](../reports/temporal-final-evaluation-v1-verification.md) | Synthetic inference, accounting, bootstrap and failure checks |
 | [Results and evidence](../reports/README.md) | Observed runs and dated verification milestones |
 | [Contributing](../CONTRIBUTING.md) | CPU checks, packaging, and change requirements |
