@@ -109,6 +109,18 @@ rerun, rename outputs to bypass the collision, or treat this authorization as
 permission for a new experiment. The holdout is consumed for future development;
 quality-aware triage needs separate evaluation evidence.
 
+## Declarative noise/dataset proposals
+
+`configs/noise-quality-datasets-v1.yaml` and `configs/noise-robustness-v1.yaml`
+are **unsupported declarative drafts**, not training schema-2 or implemented
+analysis/final-evaluation schemas. Both have `execution_authorized: false`.
+Do not pass them to `scripts/manage.py`; there is no runnable acquisition,
+augmentation or stress-test command for them. See the
+[readiness report](../reports/dataset-readiness-noise-quality-v1.md) and
+[frozen proposal](experiments/noise-robustness-v1.md). Dataset/input/case-plan
+hashes are pending until separately authorized acquisition/audit/implementation;
+no new numerical policy is enabled by documenting these drafts.
+
 ## Resume
 
 Keep the original configuration and request continuation with an action flag:

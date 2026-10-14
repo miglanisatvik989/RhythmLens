@@ -78,6 +78,22 @@ Complete ignored outputs remain local and still need external archival.
 A Git report is not an artifact backup; recorded hashes cannot restore lost bytes.
 No bulk run outputs, predictions, ECG or weights are published in Git.
 
+## Next milestone: dataset readiness and noise proposal
+
+The [readiness report](dataset-readiness-noise-quality-v1.md) identifies NSTDB
+1.0.0 noise-only records and BUT QDB 1.0.0 quality data from primary documentation.
+Acquisition, local audits and new dataset manifests are pending. Rhythm labels,
+quality annotations and synthetic corruption metadata remain separate; no
+cross-dataset quality transfer is claimed.
+
+The [frozen noise proposal](../docs/experiments/noise-robustness-v1.md) specifies
+validation-only stress testing of all three original temporal checkpoints and a
+paired comparison with three noise-augmented training runs. Its two new YAMLs
+are declarative, unsupported and `execution_authorized: false`. No training,
+inference or new results exist. Quality models, confidence-policy retuning and
+reviewer UI remain outside this PR. The consumed holdout remains excluded, and
+complete local artifacts still need an owner-specified durable backup destination.
+
 ## Dated verification milestones
 
 | Report | Evidence |
