@@ -656,7 +656,10 @@ def test_yaml_true_still_requires_cli(repository, monkeypatch, action):
 
 def test_false_yaml_preflight_bypasses_execution_gate(repository, monkeypatch):
     root, c, path = repository
-    assert c["execution_authorized"] is False
+    # Exercise a false fixture independently of the repository's real-analysis
+    # authorization state (which was changed by the completed reviewed-v1 run).
+    c["execution_authorized"] = False
+    path.write_text(yaml.safe_dump(c))
     monkeypatch.setattr(
         a,
         "require_authorization",
