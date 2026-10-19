@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -39,6 +40,45 @@ def index(blobs):
         if name != "SHA256SUMS.txt"
     ).encode()
     return blobs
+
+
+def release_style_index(blobs):
+    """Generated metadata: single spaces and unrelated old/ entries, no real bytes."""
+    index(blobs)
+    blobs["SHA256SUMS.txt"] = blobs["SHA256SUMS.txt"].replace(b"  ", b" ")
+    blobs["SHA256SUMS.txt"] += (
+        b"a" * 64 + b" old/oldma.dat\n" + b"b" * 64 + b" ./old/oldem.hea\n"
+    )
+    return blobs
+
+
+def mock_transport(monkeypatch, blobs):
+    urls = []
+
+    class Response:
+        def __init__(self, url):
+            self.url = url
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            pass
+
+        def geturl(self):
+            return self.url
+
+        def read(self, size):
+            assert size == 10_000_001
+            return blobs[self.url.rsplit("/", 1)[1]]
+
+    def fake_open(url, timeout):
+        assert timeout == 60
+        urls.append(url)
+        return Response(url)
+
+    monkeypatch.setattr(nstdb, "urlopen", fake_open)
+    return urls
 
 
 @pytest.fixture(scope="module")
@@ -192,35 +232,237 @@ def test_explicit_source_required_and_collision_precedes_read(tmp_path):
 def test_download_is_explicit_exact_urls_synthetic_transport(
     tmp_path, synthetic_blobs, monkeypatch
 ):
-    urls = []
-
-    class Response:
-        def __init__(self, url):
-            self.url = url
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *args):
-            pass
-
-        def geturl(self):
-            return self.url
-
-        def read(self, size):
-            return synthetic_blobs[self.url.rsplit("/", 1)[1]]
-
-    def fake_open(url, timeout):
-        assert timeout == 60
-        urls.append(url)
-        return Response(url)
-
-    monkeypatch.setattr(nstdb, "urlopen", fake_open)
+    blobs = release_style_index(dict(synthetic_blobs))
+    urls = mock_transport(monkeypatch, blobs)
     result = nstdb.acquire(
         tmp_path / "raw", tmp_path / "manifest", local=None, download=True
     )
     assert urls == [nstdb.BASE_URL + name for name in nstdb.FILES]
     assert result["method"] == "explicit_https_download"
+    assert {p.name for p in (tmp_path / "raw").iterdir()} == set(nstdb.FILES)
+
+
+@pytest.mark.parametrize("separator", [" ", "  ", " *"])
+@pytest.mark.parametrize("newline", ["\n", "\r\n", ""])
+def test_index_separator_grammar(separator, newline):
+    value = ("ABCDEF01" * 8 + separator + "./old/noise-1.dat" + newline).encode()
+    assert nstdb.parse_checksum_index(value) == {"old/noise-1.dat": "abcdef01" * 8}
+
+
+@pytest.mark.parametrize(
+    "entry",
+    [
+        b"g" * 64 + b" old/file",
+        b"0" * 63 + b" old/file",
+        b"0" * 65 + b" old/file",
+        b"0" * 64,
+        b"0" * 64 + b" ",
+        b"0" * 64 + b"   old/file",
+        b"0" * 64 + b"\told/file",
+        b"0" * 64 + b" * old/file",
+        b" " + b"0" * 64 + b" old/file",
+        b"0" * 64 + b" old/fi\rle",
+        b"0" * 64 + b" old/file\v",
+        b"0" * 64 + b" old/\xff",
+        b"",
+    ],
+)
+def test_malformed_unrelated_index_entry_rejected(synthetic_blobs, entry):
+    blobs = dict(synthetic_blobs)
+    blobs["SHA256SUMS.txt"] += entry + b"\n"
+    with pytest.raises(ValueError):
+        nstdb.validate_files(blobs)
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "/absolute",
+        "//server/file",
+        "../escape",
+        "old/../escape",
+        "old/./file",
+        "old//file",
+        "old/file/",
+        "C:/file",
+        "old/file:stream",
+        "old\\file",
+        "old/%2e%2e/file",
+        "old/file name",
+        "old/file\tname",
+        "old/file\x00name",
+        "old/file?query",
+        "old/file.",
+        "old/file...",
+        "old/name./file",
+        "././file",
+        "./../file",
+        ".",
+        "..",
+        "./",
+    ],
+)
+def test_unsafe_unrelated_index_name_rejected(synthetic_blobs, name):
+    blobs = dict(synthetic_blobs)
+    blobs["SHA256SUMS.txt"] += b"0" * 64 + b" " + name.encode() + b"\n"
+    with pytest.raises(ValueError):
+        nstdb.validate_files(blobs)
+
+
+@pytest.mark.parametrize("alias", ["bw.dat", "./bw.dat", "BW.dat", "./BW.dat"])
+@pytest.mark.parametrize("same_digest", [False, True])
+def test_duplicate_and_normalization_aliases_rejected(
+    synthetic_blobs, alias, same_digest
+):
+    blobs = dict(synthetic_blobs)
+    checksum = hashlib.sha256(blobs["bw.dat"]).hexdigest() if same_digest else "0" * 64
+    blobs["SHA256SUMS.txt"] += f"{checksum} {alias}\n".encode()
+    with pytest.raises(ValueError, match="Ambiguous"):
+        nstdb.validate_files(blobs)
+
+
+@pytest.mark.parametrize("alias", ["old/noise", "./old/noise", "OLD/noise"])
+def test_unrelated_index_aliases_rejected(synthetic_blobs, alias):
+    blobs = dict(synthetic_blobs)
+    blobs["SHA256SUMS.txt"] += b"a" * 64 + b" old/noise\n"
+    blobs["SHA256SUMS.txt"] += b"b" * 64 + f" {alias}\n".encode()
+    with pytest.raises(ValueError, match="Ambiguous"):
+        nstdb.validate_files(blobs)
+
+
+@pytest.mark.parametrize("failure", ["missing", "mismatch"])
+@pytest.mark.parametrize("name", [n for n in nstdb.FILES if n != "SHA256SUMS.txt"])
+def test_every_required_checksum_enforced(synthetic_blobs, name, failure):
+    blobs = dict(synthetic_blobs)
+    entries = blobs["SHA256SUMS.txt"].decode().splitlines()
+    entries = [
+        ("0" * 64 + "  " + name if failure == "mismatch" else "")
+        if line.endswith("  " + name)
+        else line
+        for line in entries
+    ]
+    blobs["SHA256SUMS.txt"] = (
+        "\n".join(line for line in entries if line) + "\n"
+    ).encode()
+    with pytest.raises(ValueError, match="checksum missing/mismatch|checksum missing"):
+        nstdb.validate_files(blobs)
+
+
+def test_release_style_local_import_never_reads_unrelated_entries(
+    tmp_path, local_source, synthetic_blobs, monkeypatch
+):
+    blobs = release_style_index(dict(synthetic_blobs))
+    (local_source / "SHA256SUMS.txt").write_bytes(blobs["SHA256SUMS.txt"])
+    original = Path.read_bytes
+    reads = []
+
+    def tracked_read(path):
+        if path.is_relative_to(local_source):
+            reads.append(str(path.relative_to(local_source)))
+            assert reads[-1] in nstdb.FILES
+        return original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", tracked_read)
+    raw, manifest = tmp_path / "raw", tmp_path / "manifest"
+    nstdb.acquire(raw, manifest, local=local_source, download=False)
+    assert reads == list(nstdb.FILES)
+    assert {p.name for p in raw.iterdir()} == set(nstdb.FILES)
+
+
+@pytest.mark.parametrize("method", ["local", "download"])
+@pytest.mark.parametrize(
+    "failure", ["syntax", "unsafe", "coverage", "checksum", "membership"]
+)
+def test_invalid_metadata_blocks_all_signal_io(
+    tmp_path, local_source, synthetic_blobs, monkeypatch, method, failure
+):
+    blobs = dict(synthetic_blobs)
+    if failure == "syntax":
+        blobs["SHA256SUMS.txt"] += b"invalid unrelated entry\n"
+    elif failure == "unsafe":
+        blobs["SHA256SUMS.txt"] += b"0" * 64 + b" old/../escape\n"
+    elif failure == "coverage":
+        blobs["SHA256SUMS.txt"] = b"\n".join(
+            line
+            for line in blobs["SHA256SUMS.txt"].splitlines()
+            if not line.endswith(b"  em.dat")
+        )
+    elif failure == "checksum":
+        blobs["nstdb.txt"] += b"changed"
+    else:
+        blobs["RECORDS"] = b"bw\nma\n"
+        index(blobs)
+    for name in nstdb.FILES[:3]:
+        (local_source / name).write_bytes(blobs[name])
+    raw, manifest = tmp_path / "raw", tmp_path / "manifest"
+    if method == "download":
+        urls = mock_transport(monkeypatch, blobs)
+    else:
+        original = Path.read_bytes
+        reads = []
+
+        def metadata_only(path):
+            if path.is_relative_to(local_source):
+                reads.append(path.name)
+                assert path.name in nstdb.FILES[:3], (
+                    "Signal import before metadata gate"
+                )
+            return original(path)
+
+        monkeypatch.setattr(Path, "read_bytes", metadata_only)
+    with pytest.raises(ValueError):
+        nstdb.acquire(
+            raw,
+            manifest,
+            local=local_source if method == "local" else None,
+            download=method == "download",
+        )
+    if method == "download":
+        assert urls == [nstdb.BASE_URL + name for name in nstdb.FILES[:3]]
+    else:
+        assert reads == list(nstdb.FILES[:3])
+    assert not raw.exists() and not manifest.exists()
+
+
+def test_payload_mismatch_after_metadata_gate_never_publishes(
+    tmp_path, synthetic_blobs, monkeypatch
+):
+    blobs = release_style_index(dict(synthetic_blobs))
+    blobs["em.dat"] += b"corrupt"
+    urls = mock_transport(monkeypatch, blobs)
+    raw, manifest = tmp_path / "raw", tmp_path / "manifest"
+    with pytest.raises(ValueError, match="checksum missing/mismatch"):
+        nstdb.acquire(raw, manifest, local=None, download=True)
+    assert urls == [nstdb.BASE_URL + name for name in nstdb.FILES]
+    assert not raw.exists() and not manifest.exists()
+
+
+@pytest.mark.parametrize("occupied", ["raw", "manifest"])
+def test_destination_collision_blocks_transport(tmp_path, monkeypatch, occupied):
+    raw, manifest = tmp_path / "raw", tmp_path / "manifest"
+    destination = raw if occupied == "raw" else manifest
+    destination.mkdir()
+    (destination / "partial").write_bytes(b"preserve")
+    with pytest.raises(FileExistsError):
+        nstdb.acquire(raw, manifest, local=None, download=True)
+    assert (destination / "partial").read_bytes() == b"preserve"
+
+
+def test_publication_failure_retains_partial_destination(
+    tmp_path, local_source, synthetic_blobs, monkeypatch
+):
+    raw, manifest = tmp_path / "raw", tmp_path / "manifest"
+
+    def failed_provenance(*args):
+        raise OSError("synthetic publication failure")
+
+    monkeypatch.setattr(nstdb, "write_new_json", failed_provenance)
+    with pytest.raises(OSError, match="publication failure"):
+        nstdb.acquire(raw, manifest, local=local_source, download=False)
+    assert manifest.exists() and not (manifest / "provenance.json").exists()
+    assert nstdb.read_files(raw) == synthetic_blobs
+    with pytest.raises(FileExistsError):
+        nstdb.acquire(raw, manifest, local=local_source, download=False)
 
 
 def test_audit_cli_manifest_integrity_and_collision(tmp_path, local_source):

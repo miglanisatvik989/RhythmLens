@@ -4,7 +4,11 @@ This milestone implements standalone acquisition/audit commands and a library
 adapter for the frozen [noise proposal](experiments/noise-robustness-v1.md).
 It does **not** implement the Phase A/B experiment runner. Both proposal YAMLs
 remain declarative and unauthorized; the Challenge decoder is unchanged.
-Real acquisition and audit are pending. No new experimental results exist.
+The [real acquisition attempt](../reports/nstdb-real-data-readiness-v1.md) failed
+publisher-index parsing before publication. The
+[compatibility repair](../reports/nstdb-publisher-index-repair-v1.md) has synthetic
+verification only. Real NSTDB readiness remains pending until a separately
+authorized retry and passing audit. No new experimental results exist.
 
 Implementation clarification recorded before implementation: publisher SHA256
 checksums cover required release files except the checksum index itself, which
@@ -15,12 +19,57 @@ publisher index; consistency checks alone do not authenticate that index. This
 is a provenance limitation, not a new execution approval mechanism. No numerical
 or experimental proposal rules change.
 
-Original bytes are preserved. Existing destination directories (even incomplete
-ones) block acquisition/audit publication; failures are never automatically
-retried or overwritten. Interrupted writes must be investigated and retained.
+Successful acquisitions preserve original bytes. Existing destination directories
+(even incomplete ones) block acquisition/audit publication; failures are never
+automatically retried or overwritten. Interrupted writes must be investigated and retained.
 The official RECORDS/index may list excluded 118/119 examples; required membership
 is checked without acquiring those examples. Only the nine selected files are
 copied/downloaded. No other data or model files are read by these commands.
+
+## Publisher-index grammar and acquisition ordering
+
+Every entry, including unrelated metadata, must match this ASCII grammar:
+
+```text
+entry     = HEX64 separator name
+separator = SP | SP SP | SP "*"
+name      = ["./"] component ("/" component)*
+component = one or more characters from A-Z a-z 0-9 _ . -
+```
+
+`HEX64` is exactly 64 hexadecimal characters, case-insensitive. LF and CRLF line
+endings and one optional final newline are supported. Empty entries, comments,
+tabs, extra spaces, escaped/percent-encoded names and non-ASCII names are not.
+Components ending in a dot (including `.` and `..`) are rejected. Absolute paths,
+backslashes, colons, repeated or trailing slashes and additional `./` segments are
+rejected. One leading `./`
+is removed for lookup; duplicate normalized names, including ASCII case aliases,
+are rejected regardless of whether their digests agree. Required filenames still
+use exact case. The grammar deliberately does not support arbitrary filename or
+filesystem normalization conventions.
+
+Safe nested entries such as `old/oldma.dat` are validated index metadata only.
+They never select a URL, local source path or destination. Both download and
+import enumerate the fixed nine-file `FILES` tuple, not the index or RECORDS.
+RECORDS must contain all bw/ma/em names without duplicate lines; excluded examples
+may be listed without being acquired.
+
+Acquisition first reads only RECORDS, SHA256SUMS.txt and nstdb.txt. Before any
+signal/header read, it validates every index entry, coverage of all eight required
+non-index files, required RECORDS membership and the actual hashes of RECORDS and
+nstdb.txt. It then reads the six fixed signal/header files and repeats complete
+validation of all nine bytestrings before reserving or writing successful outputs.
+Index consistency does not independently authenticate the index; the trust
+limitations described above remain unchanged.
+
+No caching or retry subsystem is implemented. Bytes remain in memory until full
+validation succeeds. A transport or validation failure before publication creates
+no acquisition destination and discards buffered bytes when the process exits;
+operators must preserve console logs and any separately authorized diagnostic
+metadata. This ordering avoids expensive signal transfers for invalid metadata,
+but does not preserve failed transfers or provide resume. Publication failures
+after exclusive destination creation may leave partial original files/directories;
+they are retained and block subsequent acquisition, never overwritten or retried.
 
 ## Supported commands
 
@@ -113,9 +162,14 @@ role/filter isolation, exact RNG draws and NumPy/Torch global RNG isolation,
 SNR, flat/invalid cases, length preservation and unchanged saved preprocessing.
 No clinical ECG, real NSTDB, checkpoints or predictions are test inputs.
 
-Real acquisition, digital audit, source/role manifest review and archival remain
-pending. The owner must specify a durable backup destination and restoration
-checks: ignored local noise and historical run outputs are not backed up by Git
+The original failed acquisition is preserved in the
+[failure report](../reports/nstdb-real-data-readiness-v1.md), with its findings
+unchanged. The [dated repair record](../reports/nstdb-publisher-index-repair-v1.md)
+distinguishes local metadata parsing and synthetic tests from real readiness.
+A separately authorized acquisition retry, digital audit, source/role manifest
+review and archival remain pending. The owner must specify a durable backup
+destination and restoration checks: ignored local noise and historical run outputs
+are not backed up by Git
 reports or hash indexes. This gap does not prevent synthetic implementation.
 Next request explicit real acquisition, run the audit once into a new output,
 review identities/role hashes and preserve original bytes externally. Then

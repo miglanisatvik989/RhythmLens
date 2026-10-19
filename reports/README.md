@@ -101,6 +101,14 @@ authorizations are unchanged. See [supported commands and boundaries](../docs/ns
 
 ## Dated verification milestones
 
+The [real NSTDB acquisition attempt](nstdb-real-data-readiness-v1.md) completed
+nine transfers but failed publisher-index parsing before publication; no real
+signal audit or noise-role manifest resulted. Its original failure findings are
+preserved. The [publisher-index repair](nstdb-publisher-index-repair-v1.md) accepts
+the observed delimiter and safe nested metadata, checks metadata before signal
+I/O, and records new synthetic verification. It does not establish real readiness:
+a separately authorized acquisition retry and passing audit remain pending.
+
 | Report | Evidence |
 | --- | --- |
 | [Completed internal rhythm-only evaluation](temporal-internal-rhythm-evaluation-v1.md) | Actual three-seed results, uncertainty and artifact integrity |

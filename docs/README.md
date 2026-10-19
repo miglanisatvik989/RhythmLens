@@ -17,6 +17,7 @@ Start with the [quickstart](../README.md). New experiments use YAML and
 | [Internal evaluator verification](../reports/temporal-final-evaluation-v1-verification.md) | Synthetic inference, accounting, bootstrap and failure checks |
 | [Noise/quality dataset readiness](../reports/dataset-readiness-noise-quality-v1.md) | Official source identities, label separation, pending acquisition/audits and backup gap |
 | [NSTDB acquisition/audit and adapter](nstdb-adapter.md) | Explicit noise-only acquisition, audit, synthetic-tested adapter; real data and Phase A/B pending |
+| [NSTDB publisher-index repair](../reports/nstdb-publisher-index-repair-v1.md) | Preserved failed acquisition, explicit index grammar, metadata-first checks and synthetic verification; real retry/audit pending |
 | [Noise robustness proposal](experiments/noise-robustness-v1.md) | Frozen Phase A/B development design; declarative configs only; execution false |
 | [Results and evidence](../reports/README.md) | Observed runs and dated verification milestones |
 | [Contributing](../CONTRIBUTING.md) | CPU checks, packaging, and change requirements |

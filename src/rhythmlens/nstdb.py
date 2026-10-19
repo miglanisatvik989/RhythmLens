@@ -38,21 +38,53 @@ def write_new_json(path: Path, value: dict) -> None:
         stream.write("\n")
 
 
-def validate_files(blobs: dict[str, bytes]) -> dict[str, str]:
-    if set(blobs) != set(FILES):
-        raise ValueError("Expected exactly the nine NSTDB noise-only files")
-    members = blobs["RECORDS"].decode("ascii").splitlines()
-    if len(members) != len(set(members)) or not set(RECORDS) <= set(members):
-        raise ValueError("RECORDS missing required membership or has duplicates")
+def parse_checksum_index(value: bytes) -> dict[str, str]:
+    """Parse metadata only; index names never select source or destination paths."""
+    lines = value.decode("ascii").replace("\r\n", "\n").split("\n")
+    if lines[-1] == "":
+        lines.pop()  # One optional terminal newline; blank entries remain invalid.
     checksums = {}
-    for line in blobs["SHA256SUMS.txt"].decode("ascii").splitlines():
-        match = re.fullmatch(r"([0-9a-fA-F]{64}) [ *](\S+)", line)
+    portable_names = set()
+    for line in lines:
+        match = re.fullmatch(
+            r"([0-9a-fA-F]{64})(?: {1,2}| \*)"
+            r"((?:\./)?[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*)",
+            line,
+        )
         if not match:
             raise ValueError("Malformed publisher checksum index")
         name = match[2].removeprefix("./")
-        if name in checksums or "/" in name or name in (".", ".."):
+        if any(part.endswith(".") for part in name.split("/")):
             raise ValueError("Ambiguous or unsafe checksum index member")
+        # Reject optional ./ aliases and case collisions on portable filesystems.
+        if name.casefold() in portable_names:
+            raise ValueError("Ambiguous or unsafe checksum index member")
+        portable_names.add(name.casefold())
         checksums[name] = match[1].lower()
+    return checksums
+
+
+def validate_metadata(blobs: dict[str, bytes]) -> dict[str, str]:
+    """Check index syntax, full required coverage and metadata before signal I/O."""
+    if set(blobs) != set(FILES[:3]):
+        raise ValueError("Expected exactly the three NSTDB metadata files")
+    members = blobs["RECORDS"].decode("ascii").splitlines()
+    if len(members) != len(set(members)) or not set(RECORDS) <= set(members):
+        raise ValueError("RECORDS missing required membership or has duplicates")
+    checksums = parse_checksum_index(blobs["SHA256SUMS.txt"])
+    for name in FILES:
+        if name != "SHA256SUMS.txt" and name not in checksums:
+            raise ValueError(f"Publisher checksum missing: {name}")
+    for name in ("RECORDS", "nstdb.txt"):
+        if checksums[name] != digest(blobs[name]):
+            raise ValueError(f"Publisher checksum missing/mismatch: {name}")
+    return checksums
+
+
+def validate_files(blobs: dict[str, bytes]) -> dict[str, str]:
+    if set(blobs) != set(FILES):
+        raise ValueError("Expected exactly the nine NSTDB noise-only files")
+    checksums = validate_metadata({name: blobs[name] for name in FILES[:3]})
     hashes = {name: digest(value) for name, value in blobs.items()}
     for name in FILES:
         if name != "SHA256SUMS.txt" and checksums.get(name) != hashes[name]:
@@ -83,6 +115,8 @@ def acquire(raw: Path, manifest: Path, *, local: Path | None, download: bool) ->
         raise ValueError("Raw and provenance directories must be separate")
     blobs, timestamps = {}, {}
     for name in FILES:
+        if name == FILES[3]:
+            validate_metadata(blobs)
         if local is not None:
             source = local / name
             if source.is_symlink() or not source.is_file():
