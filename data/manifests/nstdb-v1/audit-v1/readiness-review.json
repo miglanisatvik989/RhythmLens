@@ -1,0 +1,192 @@
+{
+  "schema": "rhythmlens-nstdb-readiness-review-v2",
+  "created_utc": "2026-10-21T03:45:36.351173+00:00",
+  "implementation_revision": "4c8f1576d635b0afbb0da0f58130077ce68c1b2b",
+  "status": "passed",
+  "input_file_sha256": {
+    "data/manifests/nstdb-v1/provenance.json": "964dff5fc3154eee3d1c4787edddb85ae8070b2b7f1bf882acb935db734ae1e2",
+    "data/manifests/nstdb-v1/audit-v1/audit.json": "ec04b4a146fbcfffe7223ac4722ff985dcfefed0cc9302a08c23b3eee62d9b39",
+    "data/manifests/nstdb-v1/audit-v1/roles.json": "cf6e3cb30e88811129c3f5ac82d0a78e9c92a5c7867ec7d9d91d66ebbbb3b68c",
+    "data/manifests/nstdb-v1/audit-v1/sha256.json": "7e622acc9b92dc3c4070b9cb8af2e813746c56c3943e2fe2e34431af79116002",
+    "configs/noise-robustness-v1.yaml": "5441953811f037d57a7d2f7d083abf1646977260e4f76c9911d08f5f4a7f8f84"
+  },
+  "verification_script_sha256": "6e63e1ba4e2d6a78e13bd493e965d442967beaa05a6930fe6b07305d84bbc403",
+  "environment": {
+    "python": "3.11.16",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "wfdb": "4.3.1",
+    "PyYAML": "6.0.3"
+  },
+  "records": [
+    {
+      "record": "bw",
+      "independent_wfdb_digital_agreement": true,
+      "source_finite": true,
+      "source_flat_channels": [
+        false,
+        false
+      ],
+      "roles": [
+        {
+          "role": "augmentation-train",
+          "raw_bounds_samples_half_open": [
+            0,
+            216000
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 179400,
+          "pool_sha256": "58d2c0aed22ef5cfce4928b60b29768b9c69400dcdb9c9a7884a3da6c5fc8e23"
+        },
+        {
+          "role": "development-reserve",
+          "raw_bounds_samples_half_open": [
+            237600,
+            410400
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 143400,
+          "pool_sha256": "a039be56a71cd1f140d36f85fd21a11c302ccd7c9fc95fb78f871a6b80631aae"
+        },
+        {
+          "role": "stress",
+          "raw_bounds_samples_half_open": [
+            432000,
+            648000
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 179400,
+          "pool_sha256": "73374a0df35e0b7dd83420176ad915df1cfbf02d8cee7aefa81102b92e3763bf"
+        }
+      ]
+    },
+    {
+      "record": "ma",
+      "independent_wfdb_digital_agreement": true,
+      "source_finite": true,
+      "source_flat_channels": [
+        false,
+        false
+      ],
+      "roles": [
+        {
+          "role": "augmentation-train",
+          "raw_bounds_samples_half_open": [
+            0,
+            216000
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 179400,
+          "pool_sha256": "13760d61e5f6413b40bafec0b5f2d88b38a74c2ff80400f376cdc7d73d67ca36"
+        },
+        {
+          "role": "development-reserve",
+          "raw_bounds_samples_half_open": [
+            237600,
+            410400
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 143400,
+          "pool_sha256": "7ebbb5e9039773e8ddc921b9ae01729409e16cd3ef514d8952b4c78f2f45d9b3"
+        },
+        {
+          "role": "stress",
+          "raw_bounds_samples_half_open": [
+            432000,
+            648000
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 179400,
+          "pool_sha256": "af92fc4b236466a0809b1989358234407cfda52065f7d65804e6c178652bc8ad"
+        }
+      ]
+    },
+    {
+      "record": "em",
+      "independent_wfdb_digital_agreement": true,
+      "source_finite": true,
+      "source_flat_channels": [
+        false,
+        false
+      ],
+      "roles": [
+        {
+          "role": "augmentation-train",
+          "raw_bounds_samples_half_open": [
+            0,
+            216000
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 179400,
+          "pool_sha256": "e27e0f9eef4d03ef5e28d8a87f45dd332a53f3393ab71dc390a6f97e9e53ee0a"
+        },
+        {
+          "role": "development-reserve",
+          "raw_bounds_samples_half_open": [
+            237600,
+            410400
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 143400,
+          "pool_sha256": "cf1e1788a0f743024276bc9f40ab2919a5eb92493d0f1bc3311db1220b2f6128"
+        },
+        {
+          "role": "stress",
+          "raw_bounds_samples_half_open": [
+            432000,
+            648000
+          ],
+          "finite": true,
+          "flat_channels": [
+            false,
+            false
+          ],
+          "samples_per_channel": 179400,
+          "pool_sha256": "6b8fa13e35efa052d18e648d4c2dc7051a2352798c17b390d843e035aed1e407"
+        }
+      ]
+    }
+  ],
+  "review_boundary": "supplemental_automatic_noise_checks_not_human_waveform_review",
+  "role_status": "generated_descriptors_reviewed_not_frozen_executable_experiment_inputs",
+  "native_voltage_calibration": "unverified_unitless_digital_shapes_not_mV",
+  "external_archival": "pending_destination_unspecified",
+  "limitations": [
+    "whole_source_and_pool_nonflat_does_not_guarantee_every_slice_nonzero_RMS",
+    "temporal_roles_do_not_establish_subject_or_source_independence"
+  ],
+  "challenge_signals_or_predictions_accessed": false,
+  "checkpoints_loaded": false
+}

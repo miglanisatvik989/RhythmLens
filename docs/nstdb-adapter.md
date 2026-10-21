@@ -4,11 +4,14 @@ This milestone implements standalone acquisition/audit commands and a library
 adapter for the frozen [noise proposal](experiments/noise-robustness-v1.md).
 It does **not** implement the Phase A/B experiment runner. Both proposal YAMLs
 remain declarative and unauthorized; the Challenge decoder is unchanged.
-The [real acquisition attempt](../reports/nstdb-real-data-readiness-v1.md) failed
-publisher-index parsing before publication. The
-[compatibility repair](../reports/nstdb-publisher-index-repair-v1.md) has synthetic
-verification only. Real NSTDB readiness remains pending until a separately
-authorized retry and passing audit. No new experimental results exist.
+The [original acquisition attempt](../reports/nstdb-real-data-readiness-v1.md) failed
+publisher-index parsing before publication; the
+[compatibility repair](../reports/nstdb-publisher-index-repair-v1.md) preserves that
+failure. The subsequent [real-data readiness record](../reports/nstdb-real-data-readiness-v2.md)
+documents a timed-out network attempt followed by an explicitly authorized local
+import, passed strict audit and review of all nine noise-role descriptors.
+Native voltage calibration and durable archival remain unverified. No new model
+experimental results exist.
 
 Implementation clarification recorded before implementation: publisher SHA256
 checksums cover required release files except the checksum index itself, which
@@ -73,9 +76,10 @@ they are retained and block subsequent acquisition, never overwritten or retried
 
 ## Supported commands
 
-Run from the repository with the existing CPU environment. These examples are
-for a **future explicitly requested acquisition**; they were not run on real data
-for this milestone. Choose one source, not both:
+Run from the repository with the existing CPU environment. These commands require
+explicit acquisition authorization and absent destinations. The local-import and
+audit commands were used in the linked readiness record; its occupied destinations
+must be preserved. Choose one source, not both:
 
 ```sh
 # Import the owner's nine original release files; never contacts the network.
@@ -166,14 +170,18 @@ The original failed acquisition is preserved in the
 [failure report](../reports/nstdb-real-data-readiness-v1.md), with its findings
 unchanged. The [dated repair record](../reports/nstdb-publisher-index-repair-v1.md)
 distinguishes local metadata parsing and synthetic tests from real readiness.
-A separately authorized acquisition retry, digital audit, source/role manifest
-review and archival remain pending. The owner must specify a durable backup
+The [local-import readiness record](../reports/nstdb-real-data-readiness-v2.md)
+records the passed real digital audit, supplemental finite/nonflat and independent
+WFDB checks, and review of all nine source/role descriptors. The acquisition
+provenance's `acquired_utc` fields are local import times, not observed browser
+download times; its original `audit: pending` field is acquisition-time state.
+The separate audit records the later outcome. Reviewed descriptors are not frozen
+executable experiment inputs, and both proposal YAMLs remain unchanged.
+The owner must specify a durable backup
 destination and restoration checks: ignored local noise and historical run outputs
 are not backed up by Git
 reports or hash indexes. This gap does not prevent synthetic implementation.
-Next request explicit real acquisition, run the audit once into a new output,
-review identities/role hashes and preserve original bytes externally. Then
-implement and synthetically verify Phase A pairing, baseline reproduction,
+Next implement and synthetically verify Phase A pairing, baseline reproduction,
 complete case accounting/lifecycle and scoring before separately authorizing any
 validation-only inference. Phase B training, BUT quality assessment, deferral and
 reviewer interface remain later work. The consumed Challenge holdout is excluded;
