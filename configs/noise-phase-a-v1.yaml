@@ -1,0 +1,100 @@
+# Separate execution contract; disabled. Frozen proposal schemas remain unsupported.
+protocol_schema: rhythmlens-noise-phase-a-v1
+execution_authorized: true
+partition: validation
+output_root: outputs/noise-robustness/noise-robustness-v1/phase-a
+split_dir: splits/challenge2017-v3-seed42-v1
+data_identity:
+  split_version: challenge2017-v3-seed42-v1
+  assignment_sha256: fb27f37a8f9dcd1d8931116e252290a68be29844b5b81badc3223954184054c7
+  frozen_metadata_sha256: 2c887a1934fc93f40861a87522b5b2b5aee310aa622335e7912beffc0e26c121
+  source_manifest_sha256: a390f3103023df679d08544ce6f4ca9f972fb59394901a78c3027de93f1d0560
+  source_audit_sha256: 2e85add08052656eed0b72ddf0bb40c1d7163ee131aa18d796625ffb78516b40
+  source_provenance_sha256: d7d79603a51d5ef35f93f5d2ae55344f0b7a6fe567d8c46b29a31575c6c4b636
+  train_sha256: 3f249df84acbbd253ca8fdc73c29fc74c5d84f04aa08e3e4aa3103ebbd51e580
+  validation_sha256: 19b515593afa35b98a3c86fe0c45f32e67e6a29a56aab6186b81e8155552e5cd
+  dependency_lock_sha256: 4ff3ef044d9e70d26b8a5c0494478e30cbc3f73ac3ecd94c109e1dd1adf44c8d
+metadata_sha256:
+  configs/noise-quality-datasets-v1.yaml: 9d1c083f4ff69561e7560e7f29d240b6aa8f494dcf89216f56968485af91dc7d
+  configs/noise-robustness-v1.yaml: 5441953811f037d57a7d2f7d083abf1646977260e4f76c9911d08f5f4a7f8f84
+  configs/temporal-calibration-deferral-v1.yaml: b357ea551d68fecdee42661e36b0bab52a05f9b8b5eaed79959ce761ef7f0d2d
+  configs/temporal-cuda128-seed43.yaml: 00f07878fc338420eb7e2d7708aa3e8addea73874d5436148f0da7e989e573ac
+  configs/temporal-cuda128-seed44.yaml: a931d40ab2ea9fdae0e3508b4b4c555f0c9744eb2c0e14a8493f5032bee1f3bb
+  configs/temporal-cuda128.yaml: df2bc25e8fc7fd62654cde86efd2fe4946ecab43cdd698f2f6cff364e590503b
+  data/manifests/challenge2017-v3/audit.json: 2e85add08052656eed0b72ddf0bb40c1d7163ee131aa18d796625ffb78516b40
+  data/manifests/challenge2017-v3/provenance.json: d7d79603a51d5ef35f93f5d2ae55344f0b7a6fe567d8c46b29a31575c6c4b636
+  data/manifests/challenge2017-v3/records.csv: a390f3103023df679d08544ce6f4ca9f972fb59394901a78c3027de93f1d0560
+  data/manifests/nstdb-v1/audit-v1/audit.json: ec04b4a146fbcfffe7223ac4722ff985dcfefed0cc9302a08c23b3eee62d9b39
+  data/manifests/nstdb-v1/audit-v1/readiness-review.json: 7d7481a145700e5a041dc26ad97da25def88ead2c56d51b35602707f5a1f736f
+  data/manifests/nstdb-v1/audit-v1/roles.json: cf6e3cb30e88811129c3f5ac82d0a78e9c92a5c7867ec7d9d91d66ebbbb3b68c
+  data/manifests/nstdb-v1/audit-v1/sha256.json: 7e622acc9b92dc3c4070b9cb8af2e813746c56c3943e2fe2e34431af79116002
+  data/manifests/nstdb-v1/provenance.json: 964dff5fc3154eee3d1c4787edddb85ae8070b2b7f1bf882acb935db734ae1e2
+  docs/experiments/noise-robustness-v1.md: f474b9d5dfcdf4c49e0a508f90352313ba96bf1d53e0cd0396a2a1427477d4d7
+  environments/cuda128/uv.lock: 2c5ed7cb262d94c1e2d334af9955de796ddf43e8d8be73f0c32976cdc75474a1
+  reports/nstdb-real-data-readiness-v2.md: c7b0369777df2165afcd01a39bbe13cd018d97272efdb9674ecd2c24b7af515a
+  reports/rhythm-multiseed-v1.json: b4b98cef0fedf2e1da7d1a904a86572c5434dd799a033a7625fd348632c5b3f8
+  splits/challenge2017-v3-seed42-v1/config.json: 510ba1610a0fcbddaa634f2059c8d2deb0f83b2e1631e710ae461b0f83077b3e
+  splits/challenge2017-v3-seed42-v1/frozen.json: 2c887a1934fc93f40861a87522b5b2b5aee310aa622335e7912beffc0e26c121
+  splits/challenge2017-v3-seed42-v1/summary.json: f2673a1e0bce9a94bc6af99bdab8b34b96b2ce3408138a8cd2bdcdceb4e2093d
+  splits/challenge2017-v3-seed42-v1/train.csv: 3f249df84acbbd253ca8fdc73c29fc74c5d84f04aa08e3e4aa3103ebbd51e580
+  splits/challenge2017-v3-seed42-v1/validation.csv: 19b515593afa35b98a3c86fe0c45f32e67e6a29a56aab6186b81e8155552e5cd
+  uv.lock: 71231d200792985f74f8a2c9ebff633621ad86d6efcc59b2b0063b5a2301c86d
+noise:
+  raw: data/raw/nstdb/1.0.0
+  provenance: data/manifests/nstdb-v1/provenance.json
+  audit: data/manifests/nstdb-v1/audit-v1/audit.json
+  roles: data/manifests/nstdb-v1/audit-v1/roles.json
+  pool_sha256:
+    bw/augmentation-train: 58d2c0aed22ef5cfce4928b60b29768b9c69400dcdb9c9a7884a3da6c5fc8e23
+    bw/development-reserve: a039be56a71cd1f140d36f85fd21a11c302ccd7c9fc95fb78f871a6b80631aae
+    bw/stress: 73374a0df35e0b7dd83420176ad915df1cfbf02d8cee7aefa81102b92e3763bf
+    ma/augmentation-train: 13760d61e5f6413b40bafec0b5f2d88b38a74c2ff80400f376cdc7d73d67ca36
+    ma/development-reserve: 7ebbb5e9039773e8ddc921b9ae01729409e16cd3ef514d8952b4c78f2f45d9b3
+    ma/stress: af92fc4b236466a0809b1989358234407cfda52065f7d65804e6c178652bc8ad
+    em/augmentation-train: e27e0f9eef4d03ef5e28d8a87f45dd332a53f3393ab71dc390a6f97e9e53ee0a
+    em/development-reserve: cf1e1788a0f743024276bc9f40ab2919a5eb92493d0f1bc3311db1220b2f6128
+    em/stress: 6b8fa13e35efa052d18e648d4c2dc7051a2352798c17b390d843e035aed1e407
+models:
+- seed: 42
+  selected_epoch: 31
+  checkpoint: outputs/rhythm/temporal-v1/cuda128/seed42/train/best.pt
+  checkpoint_sha256: 217110e48c995fcb8eac9a7eb3885356170fd461dc50b333cd62fd1022d2031d
+  preprocessing: outputs/rhythm/temporal-v1/cuda128/seed42/train/preprocessing.json
+  preprocessing_sha256: a4719420f5b867e3870386b488c954fb85f1b695f2264f57235cf0e0b80783b6
+  resolved_config: outputs/rhythm/temporal-v1/cuda128/seed42/train/config.json
+  resolved_config_sha256: 2ff2e965d2f1f09e9bb4919e3d7fb413e8164d3dae788bb44a853163f77d7a61
+  training_report: outputs/rhythm/temporal-v1/cuda128/seed42/train/run-report.json
+  training_report_sha256: 2c2781bf904b7df2b9c37397d14bdb4378439f50c641f560dbb0301de6abad14
+  historical_export: outputs/rhythm/temporal-v1/cuda128/seed42/evaluate/validation-predictions.csv
+  historical_export_sha256: e11ad0f1bcac963f82f2143535b57f44c11fd323790333430875f20c06767d78
+- seed: 43
+  selected_epoch: 42
+  checkpoint: outputs/rhythm/temporal-v1/cuda128/seed43/train/best.pt
+  checkpoint_sha256: c420c2a96ecf1e9f25ad4a7417a321a96b9eb47c217db613d9502c26e2bcde74
+  preprocessing: outputs/rhythm/temporal-v1/cuda128/seed43/train/preprocessing.json
+  preprocessing_sha256: a4719420f5b867e3870386b488c954fb85f1b695f2264f57235cf0e0b80783b6
+  resolved_config: outputs/rhythm/temporal-v1/cuda128/seed43/train/config.json
+  resolved_config_sha256: 9d4f8d648b8658b45f15fb925267563cb13f1861ffba3700cbc378fb73f8fdc4
+  training_report: outputs/rhythm/temporal-v1/cuda128/seed43/train/run-report.json
+  training_report_sha256: 205e31627a781b0b968c5bea46a1d5bd146037ec8c0fa526122d4336b9badb6b
+  historical_export: outputs/rhythm/temporal-v1/cuda128/seed43/evaluate/validation-predictions.csv
+  historical_export_sha256: 7dc18886c41d6cde5c1e43a70ec96534c09bbee9193332850d843d983e30ae0a
+- seed: 44
+  selected_epoch: 39
+  checkpoint: outputs/rhythm/temporal-v1/cuda128/seed44/train/best.pt
+  checkpoint_sha256: e6965190d29b0214a732f6bf5ef4172daaae3ede30b2e549c8d7c9760a8791c5
+  preprocessing: outputs/rhythm/temporal-v1/cuda128/seed44/train/preprocessing.json
+  preprocessing_sha256: a4719420f5b867e3870386b488c954fb85f1b695f2264f57235cf0e0b80783b6
+  resolved_config: outputs/rhythm/temporal-v1/cuda128/seed44/train/config.json
+  resolved_config_sha256: cd954668cc7ca393da6d041b307102477133cd3a4b4745f47eebb6a94442b0e5
+  training_report: outputs/rhythm/temporal-v1/cuda128/seed44/train/run-report.json
+  training_report_sha256: b52dc8f78b46c5e7b03fd65eba8f0c72a37b18b1c0aee852e089f3d6b6905e99
+  historical_export: outputs/rhythm/temporal-v1/cuda128/seed44/evaluate/validation-predictions.csv
+  historical_export_sha256: c48b6f5fc05a49b78f83f85dcd02c73199b82dc765833dddfacf3925cd45886c
+environment:
+  python: 3.11.16
+  numpy: 2.2.6
+  scipy: 1.15.3
+  torch: 2.8.0+cpu
+  wfdb: 4.3.1
+  PyYAML: 6.0.3

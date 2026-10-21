@@ -117,7 +117,21 @@ authorized manual-source import, passing strict audit and all nine reviewed role
 descriptors. Compact provenance/audit/role identities are tracked; original noise,
 logs and bulky artifacts remain local. Native voltage calibration and durable
 archival remain unverified. Reviewed descriptors are not frozen executable inputs;
-no Phase A/B implementation or model experiment was performed.
+no Phase A/B implementation or model experiment was performed at that milestone.
+
+The subsequent [Phase A implementation verification](noise-phase-a-v1-verification.md)
+records the separate disabled execution contract, deterministic stress runner,
+baseline reproduction gate, complete accounting, sealed scoring and grouped
+bootstrap. All verification uses generated fixtures and mocked protected I/O;
+no real Phase A result exists. See the [supported interface](../docs/noise-phase-a.md).
+
+The subsequent [completed CPU Phase A report](noise-phase-a-v1-results.md) and
+[compact aggregate evidence](noise-phase-a-v1-results.json) record all three clean
+reproduction gates and the full 55-condition stress run, sealed predictions,
+complete case accounting, paired uncertainty and resource observations. These are
+validation-reused development results, with no deferrals or technical failures.
+The retained new true authorization records that one attempt only; it does not
+authorize another run. Both original proposals remain false, and Phase B is pending.
 
 | Report | Evidence |
 | --- | --- |
