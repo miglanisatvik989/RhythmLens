@@ -181,10 +181,12 @@ The owner must specify a durable backup
 destination and restoration checks: ignored local noise and historical run outputs
 are not backed up by Git
 reports or hash indexes. This gap does not prevent synthetic implementation.
-Next implement and synthetically verify Phase A pairing, baseline reproduction,
-complete case accounting/lifecycle and scoring before separately authorizing any
-validation-only inference. Phase B training, BUT quality assessment, deferral and
-reviewer interface remain later work. The consumed Challenge holdout is excluded;
+The [Phase A runner](noise-phase-a.md) now implements pairing, baseline reproduction,
+complete case accounting/lifecycle and sealed scoring with generated synthetic
+verification. Its separate execution contract remains disabled; real validation-only
+inference still requires separate authorization. Phase B training, BUT quality
+assessment, deferral and reviewer interface remain later work. The consumed
+Challenge holdout is excluded;
 no new independently sealed final cohort is established here.
 
 Primary format references: [WFDB format 212](https://physionet.org/physiotools/wag/signal-5.htm),

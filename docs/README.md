@@ -19,6 +19,7 @@ Start with the [quickstart](../README.md). New experiments use YAML and
 | [NSTDB acquisition/audit and adapter](nstdb-adapter.md) | Explicit noise-only acquisition, passed real audit and synthetic-tested adapter; Phase A/B pending |
 | [NSTDB publisher-index repair](../reports/nstdb-publisher-index-repair-v1.md) | Preserved failed acquisition, explicit index grammar, metadata-first checks and dated synthetic verification |
 | [NSTDB real-data readiness](../reports/nstdb-real-data-readiness-v2.md) | Original local import, passed strict audit, nine reviewed role descriptors, provenance and archival limitations |
+| [Phase A noise runner](noise-phase-a.md) | Separate disabled execution contract, deterministic pairing, clean reproduction, sealed scoring and synthetic verification |
 | [Noise robustness proposal](experiments/noise-robustness-v1.md) | Frozen Phase A/B development design; declarative configs only; execution false |
 | [Results and evidence](../reports/README.md) | Observed runs and dated verification milestones |
 | [Contributing](../CONTRIBUTING.md) | CPU checks, packaging, and change requirements |
