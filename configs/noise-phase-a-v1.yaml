@@ -1,6 +1,6 @@
 # Separate execution contract; disabled. Frozen proposal schemas remain unsupported.
 protocol_schema: rhythmlens-noise-phase-a-v1
-execution_authorized: false
+execution_authorized: true
 partition: validation
 output_root: outputs/noise-robustness/noise-robustness-v1/phase-a
 split_dir: splits/challenge2017-v3-seed42-v1
