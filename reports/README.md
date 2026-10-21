@@ -125,6 +125,14 @@ baseline reproduction gate, complete accounting, sealed scoring and grouped
 bootstrap. All verification uses generated fixtures and mocked protected I/O;
 no real Phase A result exists. See the [supported interface](../docs/noise-phase-a.md).
 
+The subsequent [completed CPU Phase A report](noise-phase-a-v1-results.md) and
+[compact aggregate evidence](noise-phase-a-v1-results.json) record all three clean
+reproduction gates and the full 55-condition stress run, sealed predictions,
+complete case accounting, paired uncertainty and resource observations. These are
+validation-reused development results, with no deferrals or technical failures.
+The retained new true authorization records that one attempt only; it does not
+authorize another run. Both original proposals remain false, and Phase B is pending.
+
 | Report | Evidence |
 | --- | --- |
 | [Completed internal rhythm-only evaluation](temporal-internal-rhythm-evaluation-v1.md) | Actual three-seed results, uncertainty and artifact integrity |

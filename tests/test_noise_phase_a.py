@@ -151,7 +151,6 @@ def test_strict_contract_rejects_changes(tmp_path, key, value):
 
 def test_authorization_variants_and_old_schemas(tmp_path):
     c = phase.load_config(CONFIG)
-    assert c["execution_authorized"] is False
     for authorized in (False, True):
         c["execution_authorized"] = authorized
         p = tmp_path / "config.yaml"
@@ -171,10 +170,15 @@ def test_gate_before_all_protected_io(tmp_path, monkeypatch):
         "metadata_preflight",
         lambda *a: pytest.fail("metadata I/O before authority"),
     )
+    # The tracked true authorization may preserve a completed one-time attempt.
+    # Exercise rejection with an explicit generated disabled fixture instead.
+    c = phase.load_config(CONFIG)
+    c["execution_authorized"] = False
+    disabled = tmp_path / "disabled.yaml"
+    disabled.write_text(yaml.safe_dump(c))
     for runtime in (False, True):
         with pytest.raises(ValueError, match="execution_authorized"):
-            phase.execute(tmp_path, CONFIG, runtime)
-    c = phase.load_config(CONFIG)
+            phase.execute(tmp_path, disabled, runtime)
     c["execution_authorized"] = True
     p = tmp_path / "authorized.yaml"
     p.write_text(yaml.safe_dump(c))

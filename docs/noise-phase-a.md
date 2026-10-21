@@ -1,6 +1,7 @@
 # Phase A implementation and execution boundary
 
-Phase A is implemented and synthetically verified; **no real Phase A result exists**.
+Phase A is implemented and the [bounded CPU run](../reports/noise-phase-a-v1-results.md)
+is complete. Its real results are validation-reused development evidence.
 See the [verification record](../reports/noise-phase-a-v1-verification.md),
 [frozen protocol](experiments/noise-robustness-v1.md), and
 [reviewed NSTDB data evidence](../reports/nstdb-real-data-readiness-v2.md).
@@ -12,12 +13,15 @@ The dedicated interface is separate from `scripts/manage.py`:
 
 ```sh
 .venv/bin/python -m rhythmlens.noise_phase_a --help
-# Deliberately rejects execution with the committed disabled configuration:
+# Rejects execution without the separate explicit runtime authorization:
 .venv/bin/python -m rhythmlens.noise_phase_a --config configs/noise-phase-a-v1.yaml
 ```
 
-`configs/noise-phase-a-v1.yaml` is a strict, versioned execution/input contract with
-literal `execution_authorized: false`. Only its authorization boolean can vary
+`configs/noise-phase-a-v1.yaml` is a strict, versioned execution/input contract,
+initially delivered with literal `execution_authorized: false`. Its retained true
+flag now records the separately authorized, completed attempt at revision
+`9e86a99b36a677d0e87156350c86be448207af44`; it does not authorize another run.
+The fixed output root is occupied and must be preserved. Only its authorization boolean can vary
 without a new versioned implementation review: the parser pins the canonical hash
 of all other fields, rejects duplicate keys and rejects unknown schemas/fields.
 Both original proposal YAMLs remain byte-identical, unsupported and false. Their
@@ -169,7 +173,8 @@ quality-aware triage or new final-cohort claim follows from this implementation.
 The separate `scripts/supervise_phase_a.py` launches exactly one documented runner
 and does not alter numerical code or the execution policy. It requires the
 committed true authorization and a clean tree, absent fixed run/log destinations,
-and at least 10 GiB free disk. Invocation, after authorization only:
+and at least 10 GiB free disk. The following invocation was used for the completed
+attempt; its occupied destinations now block reuse:
 
 ```sh
 .venv/bin/python -u -B scripts/supervise_phase_a.py
