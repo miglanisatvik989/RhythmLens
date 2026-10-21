@@ -1,0 +1,418 @@
+{
+  "schema": "rhythmlens-nstdb-audit-v1",
+  "created_utc": "2026-10-21T03:45:28.751195+00:00",
+  "status": "passed",
+  "records": [
+    {
+      "record": "bw",
+      "channels": [
+        {
+          "name": "noise1",
+          "format": 212,
+          "gain": 0,
+          "adc_resolution": 12,
+          "adc_zero": 0,
+          "initial": -29,
+          "checksum": -3562,
+          "block_size": 0
+        },
+        {
+          "name": "noise2",
+          "format": 212,
+          "gain": 0,
+          "adc_resolution": 12,
+          "adc_zero": 0,
+          "initial": 25,
+          "checksum": -20847,
+          "block_size": 0
+        }
+      ],
+      "samples_per_channel": 650000,
+      "sampling_rate_hz": 360,
+      "missing_samples_per_channel": [
+        0,
+        0
+      ],
+      "computed_checksums": [
+        -3562,
+        -20847
+      ],
+      "semantics": "digital_minus_adc_zero_unitless_noise_shape_not_calibrated_voltage",
+      "errors": [],
+      "status": "passed"
+    },
+    {
+      "record": "ma",
+      "channels": [
+        {
+          "name": "noise1",
+          "format": 212,
+          "gain": 0,
+          "adc_resolution": 12,
+          "adc_zero": 0,
+          "initial": -18,
+          "checksum": 10269,
+          "block_size": 0
+        },
+        {
+          "name": "noise2",
+          "format": 212,
+          "gain": 0,
+          "adc_resolution": 12,
+          "adc_zero": 0,
+          "initial": 3,
+          "checksum": 7630,
+          "block_size": 0
+        }
+      ],
+      "samples_per_channel": 650000,
+      "sampling_rate_hz": 360,
+      "missing_samples_per_channel": [
+        0,
+        0
+      ],
+      "computed_checksums": [
+        10269,
+        7630
+      ],
+      "semantics": "digital_minus_adc_zero_unitless_noise_shape_not_calibrated_voltage",
+      "errors": [],
+      "status": "passed"
+    },
+    {
+      "record": "em",
+      "channels": [
+        {
+          "name": "noise1",
+          "format": 212,
+          "gain": 0,
+          "adc_resolution": 12,
+          "adc_zero": 0,
+          "initial": 5,
+          "checksum": -5959,
+          "block_size": 0
+        },
+        {
+          "name": "noise2",
+          "format": 212,
+          "gain": 0,
+          "adc_resolution": 12,
+          "adc_zero": 0,
+          "initial": -21,
+          "checksum": -26067,
+          "block_size": 0
+        }
+      ],
+      "samples_per_channel": 650000,
+      "sampling_rate_hz": 360,
+      "missing_samples_per_channel": [
+        0,
+        0
+      ],
+      "computed_checksums": [
+        -5959,
+        -26067
+      ],
+      "semantics": "digital_minus_adc_zero_unitless_noise_shape_not_calibrated_voltage",
+      "errors": [],
+      "status": "passed"
+    }
+  ],
+  "roles": [
+    {
+      "record": "bw",
+      "role": "augmentation-train",
+      "source_sha256": "15f68280aba8b006f5497c14da44b558e68caaabc2afc5c4b710eea779b7512c",
+      "pool_sha256": "58d2c0aed22ef5cfce4928b60b29768b9c69400dcdb9c9a7884a3da6c5fc8e23",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        0,
+        216000
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 179400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "bw",
+      "role": "development-reserve",
+      "source_sha256": "15f68280aba8b006f5497c14da44b558e68caaabc2afc5c4b710eea779b7512c",
+      "pool_sha256": "a039be56a71cd1f140d36f85fd21a11c302ccd7c9fc95fb78f871a6b80631aae",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        237600,
+        410400
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 143400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "bw",
+      "role": "stress",
+      "source_sha256": "15f68280aba8b006f5497c14da44b558e68caaabc2afc5c4b710eea779b7512c",
+      "pool_sha256": "73374a0df35e0b7dd83420176ad915df1cfbf02d8cee7aefa81102b92e3763bf",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        432000,
+        648000
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 179400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "ma",
+      "role": "augmentation-train",
+      "source_sha256": "40bda613a3e65adb277df1b72f8a41d2c1c2e0131ea4ec1e03cf1e2cd68199c4",
+      "pool_sha256": "13760d61e5f6413b40bafec0b5f2d88b38a74c2ff80400f376cdc7d73d67ca36",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        0,
+        216000
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 179400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "ma",
+      "role": "development-reserve",
+      "source_sha256": "40bda613a3e65adb277df1b72f8a41d2c1c2e0131ea4ec1e03cf1e2cd68199c4",
+      "pool_sha256": "7ebbb5e9039773e8ddc921b9ae01729409e16cd3ef514d8952b4c78f2f45d9b3",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        237600,
+        410400
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 143400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "ma",
+      "role": "stress",
+      "source_sha256": "40bda613a3e65adb277df1b72f8a41d2c1c2e0131ea4ec1e03cf1e2cd68199c4",
+      "pool_sha256": "af92fc4b236466a0809b1989358234407cfda52065f7d65804e6c178652bc8ad",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        432000,
+        648000
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 179400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "em",
+      "role": "augmentation-train",
+      "source_sha256": "4f9416a04b2bed98081ee3118c1282f9e35321bfd5da96ce48056a3fe147358d",
+      "pool_sha256": "e27e0f9eef4d03ef5e28d8a87f45dd332a53f3393ab71dc390a6f97e9e53ee0a",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        0,
+        216000
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 179400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "em",
+      "role": "development-reserve",
+      "source_sha256": "4f9416a04b2bed98081ee3118c1282f9e35321bfd5da96ce48056a3fe147358d",
+      "pool_sha256": "cf1e1788a0f743024276bc9f40ab2919a5eb92493d0f1bc3311db1220b2f6128",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        237600,
+        410400
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 143400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    },
+    {
+      "record": "em",
+      "role": "stress",
+      "source_sha256": "4f9416a04b2bed98081ee3118c1282f9e35321bfd5da96ce48056a3fe147358d",
+      "pool_sha256": "6b8fa13e35efa052d18e648d4c2dc7051a2352798c17b390d843e035aed1e407",
+      "hash_encoding": "little_endian_float64_C_order_samples_by_channels",
+      "raw_bounds_samples_half_open": [
+        432000,
+        648000
+      ],
+      "source_sampling_rate_hz": 360,
+      "target_sampling_rate_hz": 300,
+      "resampling": {
+        "up": 5,
+        "down": 6,
+        "window": [
+          "kaiser",
+          5.0
+        ],
+        "padtype": "constant",
+        "cval": 0
+      },
+      "scipy_version": "1.15.3",
+      "trim_output_samples_each_end": 300,
+      "samples_per_channel": 179400,
+      "channels": [
+        0,
+        1
+      ],
+      "semantics": "unitless_digital_shape_no_voltage_calibration"
+    }
+  ],
+  "errors": [],
+  "subject_ids": "unavailable",
+  "independence": "temporal_not_subject_or_source",
+  "numpy_version": "2.2.6",
+  "file_sha256": {
+    "RECORDS": "006d76f378c140ebbb1c20865a79ccb58e2f797b8ea7f1aa88968f1e319af5a4",
+    "SHA256SUMS.txt": "b76bd98c5111439fcfff2f410afd70d64e79f072049c45b5a9916a3044fdb84f",
+    "nstdb.txt": "7d31e1797fa7c67e77a4cf38a3321d0594169680fa8ad5f4c9124ad7b265fdb0",
+    "bw.dat": "15f68280aba8b006f5497c14da44b558e68caaabc2afc5c4b710eea779b7512c",
+    "bw.hea": "e3ea3b09fb8d65877cf6ae4dec213b9693243c435333a150c14f6b551f7b7d61",
+    "ma.dat": "40bda613a3e65adb277df1b72f8a41d2c1c2e0131ea4ec1e03cf1e2cd68199c4",
+    "ma.hea": "c3751bb8d327b83158f3e4a81f821518a71d1ae8566189b098baa47fb89afaa7",
+    "em.dat": "4f9416a04b2bed98081ee3118c1282f9e35321bfd5da96ce48056a3fe147358d",
+    "em.hea": "0bdfa989de0dd06486159f2c36bd80abd684d951c3930daea2ee46572fd20d49"
+  },
+  "provenance_sha256": "6a87f70e444fc3e4ef26afbfadd9912dc7139cb1aba5c028d45e248a1aac173e"
+}

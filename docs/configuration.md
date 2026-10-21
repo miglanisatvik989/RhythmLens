@@ -121,6 +121,10 @@ augmentation or stress-test command for them. See the
 hashes are pending until separately authorized acquisition/audit/implementation;
 no new numerical policy is enabled by documenting these drafts.
 
+The separate [NSTDB module CLI](nstdb-adapter.md) now implements explicit
+noise-only acquisition and audit with versioned JSON provenance/role outputs.
+It does not parse these YAMLs, run Phase A/B, or enable experiment execution.
+
 ## Resume
 
 Keep the original configuration and request continuation with an action flag:

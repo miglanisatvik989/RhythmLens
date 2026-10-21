@@ -1,0 +1,80 @@
+{
+  "schema": "rhythmlens-nstdb-acquisition-v1",
+  "dataset": "nstdb",
+  "version": "1.0.0",
+  "doi": "10.13026/C2HS3T",
+  "license": "ODC-By-1.0",
+  "license_url": "https://physionet.org/content/nstdb/view-license/1.0.0/",
+  "attribution": "Moody GB, Muldrow W, Mark RG. A noise stress test for arrhythmia detectors. Computers in Cardiology 11:381-384 (1984); MIT-BIH Noise Stress Test Database, PhysioNet.",
+  "method": "explicit_local_import",
+  "local_source": "/mnt/c/Users/satvi/Downloads/mit-bih-noise-stress-test-database-1.0.0/mit-bih-noise-stress-test-database-1.0.0",
+  "checksum_trust": "owner_supplied_publisher_index",
+  "checksum_index_self_authenticated": false,
+  "files": {
+    "RECORDS": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/RECORDS",
+      "acquired_utc": "2026-10-21T03:45:23.251156+00:00",
+      "bytes": 93,
+      "sha256": "006d76f378c140ebbb1c20865a79ccb58e2f797b8ea7f1aa88968f1e319af5a4",
+      "publisher_checksum_verified": true
+    },
+    "SHA256SUMS.txt": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/SHA256SUMS.txt",
+      "acquired_utc": "2026-10-21T03:45:23.257039+00:00",
+      "bytes": 7439,
+      "sha256": "b76bd98c5111439fcfff2f410afd70d64e79f072049c45b5a9916a3044fdb84f",
+      "publisher_checksum_verified": false
+    },
+    "nstdb.txt": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/nstdb.txt",
+      "acquired_utc": "2026-10-21T03:45:23.262482+00:00",
+      "bytes": 1922,
+      "sha256": "7d31e1797fa7c67e77a4cf38a3321d0594169680fa8ad5f4c9124ad7b265fdb0",
+      "publisher_checksum_verified": true
+    },
+    "bw.dat": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/bw.dat",
+      "acquired_utc": "2026-10-21T03:45:23.276153+00:00",
+      "bytes": 1950000,
+      "sha256": "15f68280aba8b006f5497c14da44b558e68caaabc2afc5c4b710eea779b7512c",
+      "publisher_checksum_verified": true
+    },
+    "bw.hea": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/bw.hea",
+      "acquired_utc": "2026-10-21T03:45:23.282276+00:00",
+      "bytes": 93,
+      "sha256": "e3ea3b09fb8d65877cf6ae4dec213b9693243c435333a150c14f6b551f7b7d61",
+      "publisher_checksum_verified": true
+    },
+    "ma.dat": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/ma.dat",
+      "acquired_utc": "2026-10-21T03:45:23.302411+00:00",
+      "bytes": 1950000,
+      "sha256": "40bda613a3e65adb277df1b72f8a41d2c1c2e0131ea4ec1e03cf1e2cd68199c4",
+      "publisher_checksum_verified": true
+    },
+    "ma.hea": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/ma.hea",
+      "acquired_utc": "2026-10-21T03:45:23.315299+00:00",
+      "bytes": 90,
+      "sha256": "c3751bb8d327b83158f3e4a81f821518a71d1ae8566189b098baa47fb89afaa7",
+      "publisher_checksum_verified": true
+    },
+    "em.dat": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/em.dat",
+      "acquired_utc": "2026-10-21T03:45:23.339012+00:00",
+      "bytes": 1950000,
+      "sha256": "4f9416a04b2bed98081ee3118c1282f9e35321bfd5da96ce48056a3fe147358d",
+      "publisher_checksum_verified": true
+    },
+    "em.hea": {
+      "source_url": "https://physionet.org/files/nstdb/1.0.0/em.hea",
+      "acquired_utc": "2026-10-21T03:45:23.347872+00:00",
+      "bytes": 92,
+      "sha256": "0bdfa989de0dd06486159f2c36bd80abd684d951c3930daea2ee46572fd20d49",
+      "publisher_checksum_verified": true
+    }
+  },
+  "audit": "pending",
+  "external_archive": "pending_destination_unspecified"
+}

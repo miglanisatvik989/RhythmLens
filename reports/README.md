@@ -82,7 +82,8 @@ No bulk run outputs, predictions, ECG or weights are published in Git.
 
 The [readiness report](dataset-readiness-noise-quality-v1.md) identifies NSTDB
 1.0.0 noise-only records and BUT QDB 1.0.0 quality data from primary documentation.
-Acquisition, local audits and new dataset manifests are pending. Rhythm labels,
+Its acquisition/audit findings describe that earlier milestone; subsequent NSTDB
+readiness is recorded below. BUT acquisition remains pending. Rhythm labels,
 quality annotations and synthetic corruption metadata remain separate; no
 cross-dataset quality transfer is claimed.
 
@@ -94,7 +95,29 @@ inference or new results exist. Quality models, confidence-policy retuning and
 reviewer UI remain outside this PR. The consumed holdout remains excluded, and
 complete local artifacts still need an owner-specified durable backup destination.
 
+The subsequent [NSTDB implementation verification](nstdb-adapter-v1-verification.md)
+records acquisition/audit support and a synthetic-tested noise adapter. Real
+acquisition/audit were pending at that milestone. The later real-data record below
+supplies the NSTDB outcome; Phase A/B execution and results remain pending, and
+proposal authorizations are unchanged. See [supported commands and boundaries](../docs/nstdb-adapter.md).
+
 ## Dated verification milestones
+
+The [real NSTDB acquisition attempt](nstdb-real-data-readiness-v1.md) completed
+nine transfers but failed publisher-index parsing before publication; no real
+signal audit or noise-role manifest resulted. Its original failure findings are
+preserved. The [publisher-index repair](nstdb-publisher-index-repair-v1.md) accepts
+the observed delimiter and safe nested metadata, checks metadata before signal
+I/O, and records dated synthetic verification. That repair alone did not establish
+real readiness.
+
+The subsequent [local-import readiness record](nstdb-real-data-readiness-v2.md)
+preserves the repaired adapter's network timeout and records the owner's separately
+authorized manual-source import, passing strict audit and all nine reviewed role
+descriptors. Compact provenance/audit/role identities are tracked; original noise,
+logs and bulky artifacts remain local. Native voltage calibration and durable
+archival remain unverified. Reviewed descriptors are not frozen executable inputs;
+no Phase A/B implementation or model experiment was performed.
 
 | Report | Evidence |
 | --- | --- |
