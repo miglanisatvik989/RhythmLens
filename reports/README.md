@@ -147,3 +147,5 @@ authorize another run. Both original proposals remain false, and Phase B is pend
 
 Dated reports describe their milestone, not the current quickstart. Their contents
 and paths are preserved. Follow [current documentation](../docs/README.md).
+
+Phase B implementation is recorded in [its synthetic verification record](noise-phase-b-v1-verification.md). Its separate execution flag is false; no real augmented training or comparison result exists.
