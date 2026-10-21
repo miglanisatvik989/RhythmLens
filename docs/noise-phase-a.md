@@ -163,3 +163,37 @@ All outcomes remain reused-validation development evidence. Unknown patients,
 noise-source dependence, fixed model seeds/plans, historical selection and severe
 corruption's unverified recognizability limit interpretation. No clinical,
 quality-aware triage or new final-cohort claim follows from this implementation.
+
+## External progress and resource supervision
+
+The separate `scripts/supervise_phase_a.py` launches exactly one documented runner
+and does not alter numerical code or the execution policy. It requires the
+committed true authorization and a clean tree, absent fixed run/log destinations,
+and at least 10 GiB free disk. Invocation, after authorization only:
+
+```sh
+.venv/bin/python -u -B scripts/supervise_phase_a.py
+```
+
+Its private process session and PID/start-time tracking include live descendants,
+including observed descendants subsequently reparented. Resource polling is once
+per second; progress refresh is every five seconds. RAM is aggregate resident size
+(shared pages may be counted more than once). These are sampled observations, not
+kernel memory/disk quotas or an assertion that subsecond peaks were measured.
+At an observed aggregate RSS above 4 GiB, generated run/log output above 5 GiB,
+or 7 h 55 min elapsed, it sends SIGINT to this run's identified processes. At
+8 h it force-stops remaining identified processes and marks cleanup incomplete.
+Unexpected monitor failures also interrupt/clean up the specific run; no unrelated
+process is signaled. Completed files are retained without overwrite or retry.
+
+The terminal bar counts successful batch-array/complete-batch-metadata pairs,
+never started journal events, without parsing prediction arrays. It labels
+preflight, clean reproduction, stress inference, sealing, indeterminate bootstrap/
+scoring, completion or failure. Percentage and rate-derived ETA describe inference
+only; the final inference batch does not establish whole-run completion. Completion
+still requires independent lifecycle/seal/artifact-index verification.
+
+Ignored `outputs/noise-phase-a-run-v1/` retains runner stdout/stderr, launch/budget
+metadata, sampled progress/resource history and current `progress.json`. The
+resource byte count includes both the fixed run root and these external logs.
+The source tree must remain unchanged while the runner is active.
