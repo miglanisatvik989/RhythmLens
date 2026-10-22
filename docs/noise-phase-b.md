@@ -39,7 +39,8 @@ PyYAML 6.0.3; existing CPU/CUDA locks are bound. The stages are separate process
 invocations under their matching environments, with identical source/configuration.
 No environment installation, upgrade, GPU probe or benchmark was performed during
 implementation. An owner-approved budget and external supervision are prerequisites
-for real execution; this interface does not enforce a wall/RAM/GPU/disk budget.
+for real execution; the runner itself does not enforce a wall/RAM/GPU/disk budget.
+The separate external supervisor below supplies sampled supervision.
 The Phase A supervisor has fixed Phase A destinations and must not launch Phase B.
 
 ## Declared inputs and baseline reuse
@@ -191,3 +192,114 @@ differences, checkpoint selection and reused validation limit future comparisons
 Native voltage calibration and source-label recognizability under severe noise
 remain unverified. Durable archival/restore awaits an owner destination. No BUT,
 quality model, calibration, UI, consumed holdout or new final evaluation is included.
+
+## External two-stage supervisor
+
+Added 2026-10-22; synthetic verification only. The separate
+`scripts/supervise_phase_b.py` launches the two existing stages without changing
+runner code, numerical policy, source bindings or any authorization flag. It
+reuses the Phase A process-table/output-size primitives, not its launcher or
+stage interpretation. Linux procfs, pidfds and main-thread interval timers are
+required. Kernel pidfd availability is checked before launching a child.
+
+All budget fields below are mandatory invocation inputs, **not approval**. After
+separate owner approval, a focused committed Phase B flag change and a fresh
+preflight, the explicit interface is:
+
+```sh
+.venv/bin/python -u -B scripts/supervise_phase_b.py --authorize-execution \
+  --training-wall-seconds 28800 --training-cleanup-seconds 600 \
+  --evaluation-wall-seconds 21600 --evaluation-cleanup-seconds 300 \
+  --overall-wall-seconds 50400 --host-rss-bytes 4294967296 \
+  --training-gpu-bytes 7516192768 \
+  --training-output-bytes 8589934592 --total-output-bytes 12884901888 \
+  --min-host-available-bytes 1073741824 --min-disk-free-bytes 10737418240
+```
+
+The committed false flag rejects this invocation before telemetry, subprocess
+launch or destination creation. Neither supplying limits nor the historical
+Phase A true flag grants Phase B authority. Both original proposal byte bindings
+and all existing policy fields remain fixed.
+
+The exclusive supervisor directory is `outputs/noise-phase-b-supervision-v1/`.
+Existing runner or supervisor destinations, including dangling symlinks, reject
+launches; failed claims cannot be reused. Claim creation does not create the
+runner root. Training uses `environments/cuda128/.venv/bin/python`; evaluation uses
+`.venv/bin/python` with `CUDA_VISIBLE_DEVICES` empty. Both environments' pinned
+metadata, the execution configuration, revision and all committed file bytes are
+checked before launch/handoff. This prevents a CUDA Torch build being selected
+for CPU evaluation without initializing any GPU for the check.
+
+Training must exit successfully with no live owned descendants, top-level
+`training_completed`, a verified full training artifact index and all three
+completed seed reports/checkpoint byte hashes. Only then can CPU evaluation enter
+the existing root. Evaluation must exit successfully and verify its completed
+status, bound full artifact index and required final seal/comparison/metric
+metadata. No checkpoint deserialization or prediction-array parsing is used by
+the supervisor's completion checks. Runner verification remains responsible for
+numerical and semantic evidence. No retry, resume or replacement root exists.
+
+Sampling is nominally once per second, readable progress snapshots every five
+seconds. It records aggregate live runner/descendant RSS, host `MemAvailable`,
+free disk, cumulative runner-plus-supervisor file sizes and GPU 0 memory. GPU
+usage is conservatively **device-wide total minus free**, including reservations
+and other workloads; there is no invented run/process attribution. The 7 GiB GPU
+ceiling applies during training. CPU evaluation's fixed CPU interpreter and empty
+CUDA visibility prevent selection of the CUDA backend; unrelated device-wide
+activity is still displayed. Required telemetry failure, malformed progress,
+monitor/storage error, resource breach or nonzero runner exit blocks handoff.
+
+Each stage's hard deadline is the earlier of its stage limit and the original
+global deadline. SIGINT is sent at that deadline minus the stage cleanup
+allowance, or earlier on a breach. Cleanup ends at the earlier of the hard
+deadline and interruption time plus that allowance. Remaining identified tasks
+then receive SIGKILL; forced or unobservable cleanup is recorded incomplete.
+Any breach stops the entire milestone even if the runner later exits zero.
+Metadata-only source/handoff verification is bounded by an interval timer at the
+same work cutoff; it cannot silently reset or consume the next stage's clock.
+The global clock begins at the exclusive supervisor claim and includes both
+stages, handoff verification and cleanup. Initial authority/source/environment
+checks precede that claim and launch no experiment.
+
+Each task is identified by PID and kernel creation time; stable pidfds are used
+for signaling, avoiding a PID-reuse race between checking identity and sending a
+signal. Private-session membership and observed ancestry retain descendants,
+including observed children later reparented or entering another session. A
+recycled root PID's unrelated session is not adopted. SIGINT and supervisor
+SIGTERM trigger bounded cleanup. Unrelated processes are never signaled.
+
+`claim.json`, stage launch/failure/verified records, supervisor `status.json`,
+`progress.json`, `snapshots.jsonl`, readable `progress.log` and separate
+`train-stdout.log` / `evaluate-stdout.log` remain ignored/local. Progress reads
+only the existing atomic runner `progress.json`: seed, epoch, published batches,
+elapsed time and last measured current-epoch/condition ETA. Validation,
+preflight, sealing and bootstrap remain indeterminate without incremental
+metadata. No whole-training completion percentage or whole-run ETA is invented.
+
+These are sampled limits, not kernel memory/disk quotas or hard real-time
+scheduling guarantees. Polling, procfs/file traversal and the bounded two-second
+GPU query introduce latency; subsecond peaks and between-poll output growth may
+be missed. Shared pages can be counted more than once in aggregate RSS. The
+watchdog's own RSS is outside the runner-tree ceiling, while the host available
+memory floor observes machine-wide pressure. Verification uses supervisor memory.
+Very short-lived descendants that detach/reparent between observations may evade
+discovery; normal private-session descendants and previously observed identities
+are retained. Abrupt supervisor SIGKILL/power loss cannot guarantee cleanup.
+Storage failure may prevent writing new diagnostics; retained files are never
+deleted to fit a budget. These limits do not establish CUDA correctness or
+augmentation benefit.
+
+Synthetic supervisor verification uses generated metadata, mocked resource
+telemetry/clocks and harmless Python children. It covers handoff, failed stages,
+all budget categories, unavailable telemetry, deadline/verification cutoffs,
+forced/incomplete cleanup, PID reuse/reparenting, unrelated-process protection,
+exclusive/dangling destinations, output accounting, readable progress and CPU
+interpreter selection. Focused supervisor verification: 39 tests passed in 1.92 s.
+The final full synthetic/regression suite passed 537 tests in 54.71 s; lint/format (44 files), frozen
+verification (17 identities), repository contracts, dependency compatibility
+(58 distributions), both offline locks (60/74 packages), and sdist/wheel builds
+passed. All 22 existing Phase A source files and the execution-policy hash remain
+unchanged. Final push/PR CI results are recorded in draft PR #10.
+No real Phase B run, GPU allocation, dependency installation or budget approval
+was performed for this addition. Fresh input/environment/capacity checks and
+explicit owner approval remain prerequisites.
