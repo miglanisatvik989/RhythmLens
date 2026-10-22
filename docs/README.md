@@ -21,6 +21,7 @@ Start with the [quickstart](../README.md). New experiments use YAML and
 | [NSTDB real-data readiness](../reports/nstdb-real-data-readiness-v2.md) | Original local import, passed strict audit, nine reviewed role descriptors, provenance and archival limitations |
 | [Phase A noise runner](noise-phase-a.md) | Separate explicit execution gate, deterministic pairing, clean reproduction, sealed scoring and synthetic verification |
 | [Completed Phase A CPU results](../reports/noise-phase-a-v1-results.md) | All three clean gates and 55-condition stress grid, paired changes, observed resources and artifact integrity |
+| [Phase B noise augmentation](noise-phase-b.md) | Disabled CUDA training/CPU paired evaluation; generated verification only |
 | [Noise robustness proposal](experiments/noise-robustness-v1.md) | Frozen Phase A/B development design; declarative configs only; execution false |
 | [Results and evidence](../reports/README.md) | Observed runs and dated verification milestones |
 | [Contributing](../CONTRIBUTING.md) | CPU checks, packaging, and change requirements |
