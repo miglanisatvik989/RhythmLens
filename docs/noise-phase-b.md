@@ -1,5 +1,13 @@
 # Phase B implementation and execution boundary
 
+**Execution update, 2026-10-22:** the separately authorized single attempt completed
+CUDA training and CPU comparison. See the [outcome and compact evidence](../reports/noise-phase-b-v1-results.md)
+for actual results, integrity checks and limitations. The retained true Phase B
+flag records that attempt only; the fixed run/supervisor roots are occupied and
+another execution is not authorized. Both original proposals and historical
+Phase A authority/results are unchanged. The implementation-time disabled and
+untested statements below describe the earlier synthetic milestone.
+
 Phase B implements the existing [frozen protocol](experiments/noise-robustness-v1.md)
 with generated-fixture verification only. **Real CUDA correctness and augmentation
 benefit remain untested.** See the [verification record](../reports/noise-phase-b-v1-verification.md).

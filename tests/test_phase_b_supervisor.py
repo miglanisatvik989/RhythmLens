@@ -390,19 +390,26 @@ def test_device_telemetry_is_device_wide_and_invalid_data_fails(tmp_path, monkey
         s.telemetry(tmp_path)
 
 
-def test_fixed_commands_and_disabled_cli_does_not_probe_or_create(monkeypatch):
+def test_fixed_commands_and_disabled_cli_does_not_probe_or_create(
+    tmp_path, monkeypatch
+):
+    from rhythmlens import noise_phase_b as phase
+
     project = Path(__file__).resolve().parents[1]
     commands = s.commands_for(project)
     assert commands["train"][0].endswith("environments/cuda128/.venv/bin/python")
     assert commands["evaluate"][0].endswith(".venv/bin/python")
+    config = phase.load_config(project / "configs/noise-phase-b-v1.yaml")
+    config["execution_authorized"] = False
+    monkeypatch.setattr(phase, "load_config", lambda path: config)
     monkeypatch.setattr(s, "telemetry", lambda *a: pytest.fail("real telemetry probe"))
-    argv = ["supervise_phase_b.py", "--root", str(project)]
+    argv = ["supervise_phase_b.py", "--root", str(tmp_path)]
     for key, value in vars(budgets()).items():
         argv.extend(["--" + key.replace("_", "-"), str(value)])
     monkeypatch.setattr(sys, "argv", argv)
     with pytest.raises(ValueError, match="authorization"):
         s.main()
-    assert not (project / s.RUN).exists() and not (project / s.LOGS).exists()
+    assert not (tmp_path / s.RUN).exists() and not (tmp_path / s.LOGS).exists()
 
 
 def test_global_clock_includes_verification_and_prevents_handoff(tmp_path):

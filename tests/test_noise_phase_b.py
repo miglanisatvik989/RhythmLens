@@ -79,7 +79,10 @@ def test_contract_rejects_changes(tmp_path, key, value):
 
 
 def test_authorization_before_any_protected_or_metadata_io(tmp_path, monkeypatch):
-    assert b.load_config(CONFIG)["execution_authorized"] is False
+    c = b.load_config(CONFIG)
+    c["execution_authorized"] = False
+    disabled = tmp_path / "disabled.yaml"
+    disabled.write_text(yaml.safe_dump(c))
     for method in ("metadata_preflight", "verify_baseline", "require_committed_source"):
         monkeypatch.setattr(
             b, method, lambda *a, **kw: pytest.fail("I/O before authority")
@@ -87,7 +90,7 @@ def test_authorization_before_any_protected_or_metadata_io(tmp_path, monkeypatch
     for stage in ("train", "evaluate"):
         for flag in (False, True):
             with pytest.raises(ValueError, match="execution_authorized"):
-                b.execute(ROOT, CONFIG, stage, flag)
+                b.execute(ROOT, disabled, stage, flag)
     c = b.load_config(CONFIG)
     c["execution_authorized"] = True
     path = tmp_path / "authorized.yaml"
@@ -674,7 +677,7 @@ def test_complete_two_stage_workflow_uses_baseline_once_and_seals_before_scoring
     assert b.inventory(original) == before
     with pytest.raises(ValueError, match="exactly one completed training"):
         b.execute(tmp_path, CONFIG, "evaluate", True)
-    assert not (ROOT / b.OUTPUT).exists()
+    assert not (tmp_path / b.OUTPUT).exists()
 
 
 def test_mismatching_maps_or_physical_evidence_block_pairing(generated_run, pools):
