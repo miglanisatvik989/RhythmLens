@@ -1,6 +1,6 @@
 # Separate disabled Phase B contract. Historical inputs are immutable.
 protocol_schema: rhythmlens-noise-phase-b-v1
-execution_authorized: false
+execution_authorized: true
 partition:
 - train
 - validation
